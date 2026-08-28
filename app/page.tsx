@@ -1,15 +1,18 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
+import { useCart } from '@/context/CartContext'
 import { ArrowRight, ShoppingBag, Menu, Search, Moon, Sun, Sparkles, ShoppingCart, User, Mail } from 'lucide-react'
 
 export default function Home() {
+  const router = useRouter()
   const [products, setProducts] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
-  const [darkMode, setDarkMode] = useState(false)
-  const [cartCount, setCartCount] = useState(0)
+  const { cartCount, addToCart, setIsCartOpen, darkMode, setDarkMode } = useCart()
 
   useEffect(() => {
     async function fetchProducts() {
@@ -30,10 +33,6 @@ export default function Home() {
     product.description?.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
-  const handleAddToCart = () => {
-    setCartCount(prev => prev + 1)
-  }
-
   return (
     <div className={`${darkMode ? 'bg-neutral-950 text-white' : 'bg-white text-neutral-900'} min-h-screen font-sans transition-colors duration-300 selection:bg-[#FACC15] selection:text-neutral-950`}>
 
@@ -41,7 +40,7 @@ export default function Home() {
       <header className={`sticky top-0 z-50 backdrop-blur-md border-b transition-colors duration-300 ${darkMode ? 'bg-neutral-950/80 border-neutral-800' : 'bg-white/80 border-neutral-100'}`}>
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between gap-4">
 
-          <div className="flex items-center gap-2.5 cursor-pointer">
+          <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => router.push('/')}>
             <div className="w-10 h-10 rounded-lg bg-[#FACC15] flex items-center justify-center text-neutral-950 font-black text-xl tracking-tighter shadow-sm">
               P
             </div>
@@ -61,28 +60,30 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Nav Icons & Actions: Cart, Account, Contact, Dark Mode */}
+          {/* Nav Icons & Actions: Cart, Account, Help, Dark Mode */}
           <div className="flex items-center gap-2 sm:gap-3">
 
-            {/* Contact */}
-            <a
-              href="#contact"
+            {/* Help */}
+            <Link
+              href="/help"
               className={`hidden lg:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition ${darkMode ? 'text-neutral-300 hover:bg-neutral-900' : 'text-neutral-600 hover:bg-neutral-100'}`}
             >
-              <Mail className="w-4 h-4" /> Contact
-            </a>
+              <Mail className="w-4 h-4" /> Help
+            </Link>
 
             {/* Account */}
             <button
+              onClick={() => router.push('/account')}
               className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition ${darkMode ? 'text-neutral-300 hover:bg-neutral-900' : 'text-neutral-600 hover:bg-neutral-100'}`}
               aria-label="Account"
             >
               <User className="w-4 h-4" /> <span className="hidden sm:inline">Account</span>
             </button>
 
-            {/* Cart */}
+            {/* Cart Button (Opens Drawer) */}
             <button
-              className={`relative flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition ${darkMode ? 'bg-neutral-900 text-yellow-400 border border-neutral-800' : 'bg-neutral-100 text-neutral-900'}`}
+              onClick={() => setIsCartOpen(true)}
+              className={`relative flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${darkMode ? 'bg-neutral-900 text-yellow-400 border border-neutral-800 hover:bg-neutral-800' : 'bg-neutral-100 text-neutral-900 hover:bg-neutral-200'}`}
               aria-label="Cart"
             >
               <ShoppingCart className="w-4 h-4" />
@@ -138,9 +139,21 @@ export default function Home() {
             <p className={`text-base sm:text-lg mb-8 font-normal ${darkMode ? 'text-neutral-400' : 'text-neutral-600'}`}>
               Discover a diverse selection of high-end tech, stylish apparel, and minimalist home furniture.
             </p>
-            <button className={`flex items-center gap-3 px-7 py-4 font-bold rounded-xl shadow-md transition ${darkMode ? 'bg-[#FACC15] text-neutral-950 hover:bg-yellow-400' : 'bg-neutral-950 text-white hover:bg-neutral-800'}`}>
-              Explore Catalog <ArrowRight className={`w-4 h-4 ${darkMode ? 'text-neutral-950' : 'text-[#FACC15]'}`} />
-            </button>
+
+            <div className="flex flex-wrap items-center gap-4">
+              <button
+                onClick={() => window.scrollTo({ top: 800, behavior: 'smooth' })}
+                className={`flex items-center gap-3 px-7 py-4 font-bold rounded-xl shadow-md transition cursor-pointer ${darkMode ? 'bg-[#FACC15] text-neutral-950 hover:bg-yellow-400' : 'bg-neutral-950 text-white hover:bg-neutral-800'}`}
+              >
+                Explore Catalog <ArrowRight className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => router.push('/signup')}
+                className="flex items-center gap-2 px-7 py-4 bg-[#FACC15] text-neutral-950 font-black rounded-xl shadow-md hover:bg-yellow-400 transition cursor-pointer"
+              >
+                Create Account <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
           </div>
 
           <div className="relative w-full lg:w-1/2 grid grid-cols-2 gap-4">
@@ -250,14 +263,14 @@ export default function Home() {
                   <span className={`text-lg font-black ${darkMode ? 'text-white' : 'text-neutral-950'}`}>${product.price}</span>
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() => window.location.href = `/products/${product.id}`}
+                      onClick={() => router.push(`/products/${product.id}`)}
                       className={`px-3 py-2 text-xs font-bold rounded-xl transition border ${darkMode ? 'border-neutral-700 text-neutral-300 hover:bg-neutral-800' : 'border-neutral-200 text-neutral-700 hover:bg-neutral-100'}`}
                     >
                       View
                     </button>
                     <button
-                      onClick={handleAddToCart}
-                      className="px-3 py-2 bg-[#FACC15] text-neutral-950 text-xs font-bold rounded-xl hover:bg-[#eab308] transition shadow-sm active:scale-95"
+                      onClick={() => addToCart(product)}
+                      className="px-3 py-2 bg-[#FACC15] text-neutral-950 text-xs font-bold rounded-xl hover:bg-[#eab308] transition shadow-sm active:scale-95 cursor-pointer"
                     >
                       Add to Cart
                     </button>
@@ -269,27 +282,45 @@ export default function Home() {
         )}
       </section>
 
-      {/* ================= FOOTER / CONTACT SECTION ================= */}
-      <footer id="contact" className="bg-neutral-950 text-white py-12 border-t border-neutral-900">
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+      {/* ================= FOOTER / DIRECTORY SECTION ================= */}
+      <footer id="contact" className="bg-neutral-950 text-white border-t border-neutral-900 transition-colors duration-300">
+        <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-4 gap-8 text-xs">
           <div>
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-[#FACC15] flex items-center justify-center text-neutral-950 font-black text-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-8 h-8 rounded-xl bg-[#FACC15] flex items-center justify-center text-neutral-950 font-black text-lg">
                 P
               </div>
-              <span className="font-black text-white text-lg">plugKe</span>
+              <span className="text-lg font-black tracking-tight text-white">plugKe</span>
             </div>
-            <p className="text-neutral-400 text-sm max-w-sm">
-              Your ultimate marketplace for high-end tech, stylish apparel, and minimalist home furniture.
-            </p>
+            <p className="text-[11px] leading-relaxed text-neutral-400">Your ultimate destination for high-end tech, stylish apparel, and minimalist home furniture in Kenya.</p>
           </div>
-          <div className="flex flex-col md:items-end justify-center">
-            <h4 className="font-bold text-sm text-white mb-2">Get in touch</h4>
-            <p className="text-neutral-400 text-sm">support@plugKe.com</p>
-            <p className="text-neutral-500 text-xs mt-1">Available Mon - Fri, 9am - 6pm</p>
+
+          <div>
+            <h4 className="font-black text-sm text-white mb-4 uppercase tracking-wider">Company</h4>
+            <ul className="space-y-2.5 font-semibold text-neutral-400">
+              <li><Link href="/" className="hover:text-[#FACC15] transition">Home Catalog</Link></li>
+              <li><Link href="/cart" className="hover:text-[#FACC15] transition">Shopping Cart</Link></li>
+              <li><Link href="/account" className="hover:text-[#FACC15] transition">Account Dashboard</Link></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-black text-sm text-white mb-4 uppercase tracking-wider">Customer Services</h4>
+            <ul className="space-y-2.5 font-semibold text-neutral-400">
+              <li><Link href="/account" className="hover:text-[#FACC15] transition">Profile Settings</Link></li>
+              <li><Link href="/help" className="hover:text-[#FACC15] transition">Help Center</Link></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-black text-sm text-white mb-4 uppercase tracking-wider">Contact Info</h4>
+            <p className="font-semibold text-neutral-400 mb-2">+254 712 345 678</p>
+            <p className="font-semibold text-neutral-400 mb-2">support@plugke.co.ke</p>
+            <p className="text-[11px] text-neutral-500">Nairobi, Kenya</p>
           </div>
         </div>
-        <div className="max-w-7xl mx-auto px-6 pt-8 border-t border-neutral-900 flex flex-col sm:flex-row items-center justify-between text-xs text-neutral-500">
+
+        <div className="max-w-7xl mx-auto px-6 py-6 border-t border-neutral-900 flex flex-col sm:flex-row items-center justify-between text-xs text-neutral-500">
           <p>© 2026 plugKe. All rights reserved. Powered by Next.js & Supabase.</p>
           <div className="flex gap-6 mt-4 sm:mt-0">
             <a href="#" className="hover:text-white transition">Privacy Policy</a>
