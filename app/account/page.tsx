@@ -34,9 +34,9 @@ export default function AccountPage() {
     const [isEditingAddress, setIsEditingAddress] = useState(false)
 
     // Profile state
-    const [fullName, setFullName] = useState('Luther Makori')
-    const [email, setEmail] = useState('ongongoluther06@gmail.com')
-    const [phone, setPhone] = useState('+254743818278')
+    const [fullName, setFullName] = useState('User')
+    const [email, setEmail] = useState('')
+    const [phone, setPhone] = useState('')
 
     // Address state
     const [addressData, setAddressData] = useState({
@@ -56,10 +56,25 @@ export default function AccountPage() {
     const [notifs, setNotifs] = useState({ emailAlerts: true, orderUpdates: true, promoSMS: false })
 
     useEffect(() => {
-        if (activeTab === 'orders') {
-            fetchOrders()
+        const fetchUserSession = async () => {
+            const { data: { session } } = await supabase.auth.getSession()
+            if (!session) {
+                router.push('/my-marketplace2/signin')
+                return
+            }
+
+            const user = session.user
+            setEmail(user.email || '')
+            setFullName(user.user_metadata?.full_name || user.email?.split('@')[0] || 'User')
+            setPhone(user.user_metadata?.phone || '+254700000000')
+
+            if (activeTab === 'orders') {
+                fetchOrders()
+            }
         }
-    }, [activeTab])
+
+        fetchUserSession()
+    }, [activeTab, router])
 
     const fetchOrders = async () => {
         setLoadingOrders(true)
