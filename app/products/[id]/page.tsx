@@ -15,7 +15,9 @@ interface Product {
     description?: string
     category?: string
 }
-
+export async function generateStaticParams() {
+    return [{ id: '1' }] // Fallback parameter for static export building
+}
 export default function ProductDetailPage() {
     const router = useRouter()
     const params = useParams()
