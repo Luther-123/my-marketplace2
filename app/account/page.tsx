@@ -64,24 +64,27 @@ export default function AccountPage() {
             }
 
             const user = session.user
-            setEmail(user.email || '')
-            setFullName(user.user_metadata?.full_name || user.email?.split('@')[0] || 'User')
-            setPhone(user.user_metadata?.phone || '+254700000000')
+            const userEmail = user.email || ''
+            setEmail(userEmail)
+            setFullName(user.user_metadata?.full_name || userEmail.split('@')[0] || 'User')
+            setPhone(user.user_metadata?.phone || '')
 
+            // Fetch user-specific records
             if (activeTab === 'orders') {
-                fetchOrders()
+                fetchOrders(userEmail)
             }
         }
 
         fetchUserSession()
     }, [activeTab, router])
 
-    const fetchOrders = async () => {
+    const fetchOrders = async (userEmail: string) => {
         setLoadingOrders(true)
         try {
             const { data, error } = await supabase
                 .from('orders')
                 .select('*')
+                .eq('user_email', userEmail) // Ensure your orders table tracks user email or user_id
                 .order('created_at', { ascending: false })
 
             if (error) {
