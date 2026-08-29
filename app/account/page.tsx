@@ -128,7 +128,8 @@ export default function AccountPage() {
 
     const handleLogout = async () => {
         await supabase.auth.signOut()
-        router.push('/')
+        localStorage.clear() // Clears the cached session token
+        router.push('/signin') // Redirects back to login
     }
 
     return (
