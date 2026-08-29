@@ -33,17 +33,17 @@ export default function AccountPage() {
     const [isEditingProfile, setIsEditingProfile] = useState(false)
     const [isEditingAddress, setIsEditingAddress] = useState(false)
 
-    // Profile state
-    const [fullName, setFullName] = useState('User')
+    // Profile state initialized as empty strings
+    const [fullName, setFullName] = useState('')
     const [email, setEmail] = useState('')
     const [phone, setPhone] = useState('')
 
-    // Address state
+    // Address state initialized as empty
     const [addressData, setAddressData] = useState({
-        street: 'Ngong Town, Namanga Close',
-        city: 'Kajiado',
-        postalCode: '00200',
-        country: 'Kenya'
+        street: '',
+        city: '',
+        postalCode: '',
+        country: ''
     })
 
     // Password state & visibility toggles
@@ -65,11 +65,12 @@ export default function AccountPage() {
 
             const user = session.user
             const userEmail = user.email || ''
+
+            // Pull actual metadata or fallback cleanly to email username without hardcoding names
             setEmail(userEmail)
-            setFullName(user.user_metadata?.full_name || userEmail.split('@')[0] || 'User')
+            setFullName(user.user_metadata?.full_name || user.user_metadata?.name || userEmail.split('@')[0] || '')
             setPhone(user.user_metadata?.phone || '')
 
-            // Fetch user-specific records
             if (activeTab === 'orders') {
                 fetchOrders(userEmail)
             }
