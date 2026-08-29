@@ -128,10 +128,9 @@ export default function AccountPage() {
 
     const handleLogout = async () => {
         await supabase.auth.signOut()
-        localStorage.clear() // Clears the cached session token
-        router.push('/signin') // Redirects back to login
+        localStorage.clear()
+        router.push('/my-marketplace2/signin')
     }
-
     return (
         <div className={`min-h-screen font-sans transition-colors duration-300 ${darkMode ? 'bg-neutral-950 text-white' : 'bg-neutral-100 text-neutral-900'}`}>
 
