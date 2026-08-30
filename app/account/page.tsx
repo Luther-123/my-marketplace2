@@ -59,7 +59,7 @@ export default function AccountPage() {
         const fetchUserSession = async () => {
             const { data: { session } } = await supabase.auth.getSession()
             if (!session) {
-                router.push('/my-marketplace2/signin')
+                router.push('/signin')
                 return
             }
 
@@ -148,7 +148,7 @@ export default function AccountPage() {
     const handleLogout = async () => {
         await supabase.auth.signOut()
         localStorage.clear()
-        router.push('/my-marketplace2/signin')
+        router.push('/signin')
     }
     return (
         <div className={`min-h-screen font-sans transition-colors duration-300 ${darkMode ? 'bg-neutral-950 text-white' : 'bg-neutral-100 text-neutral-900'}`}>
