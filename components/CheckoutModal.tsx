@@ -8,8 +8,9 @@ import { supabase } from '@/lib/supabase'
 
 export default function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
     const router = useRouter()
-    const { cart, setIsCartOpen } = useCart()
+    const { cart, setIsCartOpen, clearCart } = useCart() // <-- 1. Pull clearCart here
     const [isSubmitted, setIsSubmitted] = useState(false)
+    // ...
     const [paymentMethod, setPaymentMethod] = useState<'card' | 'mpesa' | 'apple'>('card')
 
     const [checkoutItems, setCheckoutItems] = useState<any[]>([])
@@ -77,6 +78,7 @@ export default function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; on
             return
         }
 
+        clearCart() // <-- 2. Wipe the cart and localStorage immediately on success
         setIsSubmitted(true)
     }
 
