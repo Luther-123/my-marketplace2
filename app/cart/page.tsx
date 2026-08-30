@@ -3,45 +3,18 @@
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useCart } from '@/context/CartContext'
-import { Trash2, Plus, Minus, ArrowRight, ShoppingCart, User, HelpCircle } from 'lucide-react'
-import { supabase } from '@/lib/supabase'
+import { Trash2, ArrowRight, ShoppingCart, User, HelpCircle } from 'lucide-react'
 
 export default function CartPage() {
     const router = useRouter()
-    const { cart, updateQuantity, removeFromCart, cartCount, setIsCartOpen, clearCart } = useCart()
+    const { cart, updateQuantity, removeFromCart, cartCount, setIsCartOpen } = useCart()
 
     const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0)
-    const shipping = subtotal > 500 || subtotal === 0 ? 0 : 1500.00
-    const tax = subtotal * 0.08
-    const total = subtotal + shipping + tax
+    const shipping = cart.length > 0 ? 400 : 0
+    const total = subtotal + shipping
 
-    const handleCheckout = async () => {
-        const { data: { user } } = await supabase.auth.getUser()
-        const userEmail = user?.email || prompt("Please enter your email to complete checkout:")
-
-        if (!userEmail) {
-            alert('An email is required to complete checkout.')
-            return
-        }
-
-        const { error } = await supabase
-            .from('orders')
-            .insert([
-                {
-                    customer_email: userEmail,
-                    total_amount: total,
-                    status: 'pending'
-                }
-            ])
-
-        if (error) {
-            console.error('Failed to save order:', error.message)
-            alert('Checkout failed. Please try again.')
-        } else {
-            clearCart()
-            alert('Order placed successfully!')
-            router.push('/account')
-        }
+    const handleCheckoutRedirect = async () => {
+        router.push('/checkout')
     }
 
     return (
@@ -167,8 +140,8 @@ export default function CartPage() {
                                     <span className="font-bold text-neutral-900">Ksh {subtotal.toLocaleString()}</span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span>Shipping</span>
-                                    <span className="font-bold text-neutral-900">{shipping === 0 ? 'Free' : `Ksh ${shipping.toLocaleString()}`}</span>
+                                    <span>Shipping Flat Rate</span>
+                                    <span className="font-bold text-neutral-900">Ksh {shipping.toLocaleString()}</span>
                                 </div>
                             </div>
                             <div className="flex items-center justify-between py-2 text-base font-black">
@@ -176,7 +149,7 @@ export default function CartPage() {
                                 <span className="text-xl text-neutral-950">Ksh {total.toLocaleString()}</span>
                             </div>
                             <button
-                                onClick={handleCheckout}
+                                onClick={handleCheckoutRedirect}
                                 className="w-full py-4 bg-[#FACC15] text-neutral-950 font-black text-xs uppercase tracking-wider rounded-2xl hover:bg-yellow-400 transition shadow-md flex items-center justify-center gap-2 cursor-pointer"
                             >
                                 Proceed to Checkout <ArrowRight className="w-4 h-4" />
