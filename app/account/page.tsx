@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useCart } from '@/context/CartContext'
-import { User, Lock, Bell, MapPin, LogOut, Save, HelpCircle, CheckCircle, Eye, EyeOff, Edit3, ShoppingCart, Package, Check, ChevronLeft, ChevronRight } from 'lucide-react'
+import { User, Lock, MapPin, LogOut, Save, HelpCircle, CheckCircle, Eye, EyeOff, Edit3, ShoppingCart, Package, Check, ChevronLeft, ChevronRight } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 
 interface Order {
@@ -19,7 +19,7 @@ interface Order {
 export default function AccountPage() {
     const router = useRouter()
     const { cartCount, setIsCartOpen } = useCart()
-    const [activeTab, setActiveTab] = useState<'profile' | 'orders' | 'address' | 'password' | 'notifications'>('profile')
+    const [activeTab, setActiveTab] = useState<'profile' | 'orders' | 'address' | 'password'>('profile')
     const [loading, setLoading] = useState(false)
     const [successMessage, setSuccessMessage] = useState('')
 
@@ -51,9 +51,6 @@ export default function AccountPage() {
     const [showCurrent, setShowCurrent] = useState(false)
     const [showNew, setShowNew] = useState(false)
     const [showConfirm, setShowConfirm] = useState(false)
-
-    // Notifications state
-    const [notifs, setNotifs] = useState({ emailAlerts: true, orderUpdates: true, promoSMS: false })
 
     useEffect(() => {
         const fetchUserSessionAndProfile = async () => {
@@ -302,12 +299,6 @@ export default function AccountPage() {
                                     className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl transition cursor-pointer ${activeTab === 'password' ? 'bg-[#FACC15] text-neutral-950 font-black shadow-sm' : 'text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100'}`}
                                 >
                                     <Lock className="w-4 h-4" /> Password
-                                </button>
-                                <button
-                                    onClick={() => setActiveTab('notifications')}
-                                    className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl transition cursor-pointer ${activeTab === 'notifications' ? 'bg-[#FACC15] text-neutral-950 font-black shadow-sm' : 'text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100'}`}
-                                >
-                                    <Bell className="w-4 h-4" /> Notifications
                                 </button>
                             </nav>
                         </div>
@@ -646,46 +637,6 @@ export default function AccountPage() {
                                         <Lock className="w-4 h-4" /> {loading ? 'Updating...' : 'Update Password'}
                                     </button>
                                 </form>
-                            </div>
-                        )}
-
-                        {activeTab === 'notifications' && (
-                            <div>
-                                <div className="mb-8 pb-4 border-b border-neutral-200">
-                                    <h1 className="text-2xl font-black tracking-tight text-neutral-950">Notification Preferences</h1>
-                                    <p className="text-xs text-neutral-500 mt-1">Choose what updates you want to receive.</p>
-                                </div>
-
-                                <div className="space-y-4 max-w-lg">
-                                    {[
-                                        { key: 'emailAlerts', title: 'Email Alerts', desc: 'Receive daily updates about new featured items.' },
-                                        { key: 'orderUpdates', title: 'Order & Shipping Updates', desc: 'Get live SMS and email notifications regarding your package.' },
-                                        { key: 'promoSMS', title: 'Promotional Offers & Discounts', desc: 'Receive exclusive discount codes and clearance alerts.' },
-                                    ].map((item) => (
-                                        <label key={item.key} className="flex items-start justify-between p-4 rounded-2xl border cursor-pointer transition bg-neutral-50 border-neutral-200">
-                                            <div>
-                                                <h4 className="font-bold text-sm mb-0.5 text-neutral-950">{item.title}</h4>
-                                                <p className="text-xs text-neutral-500">{item.desc}</p>
-                                            </div>
-                                            <input
-                                                type="checkbox"
-                                                checked={(notifs as any)[item.key]}
-                                                onChange={(e) => setNotifs({ ...notifs, [item.key]: e.target.checked })}
-                                                className="mt-1 w-4 h-4 accent-[#FACC15] cursor-pointer"
-                                            />
-                                        </label>
-                                    ))}
-
-                                    <button
-                                        onClick={() => {
-                                            setSuccessMessage('Notification preferences saved successfully!')
-                                            setTimeout(() => setSuccessMessage(''), 4000)
-                                        }}
-                                        className="mt-4 px-8 py-3.5 bg-[#FACC15] text-neutral-950 font-black text-xs uppercase tracking-wider rounded-2xl hover:bg-yellow-400 transition shadow-md cursor-pointer"
-                                    >
-                                        Save Preferences
-                                    </button>
-                                </div>
                             </div>
                         )}
 
