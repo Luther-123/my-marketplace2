@@ -108,12 +108,25 @@ export default function AccountPage() {
     const handleSaveProfile = async (e: React.FormEvent) => {
         e.preventDefault()
         setLoading(true)
-        setTimeout(() => {
-            setLoading(false)
-            setIsEditingProfile(false)
-            setSuccessMessage('Profile settings updated successfully!')
-            setTimeout(() => setSuccessMessage(''), 4000)
-        }, 600)
+
+        // 1. Update Supabase Auth metadata
+        const { error: authError } = await supabase.auth.updateUser({
+            data: { full_name: fullName, phone: phone }
+        })
+
+        // 2. If you also have a profiles or orders table storing this, update it here
+        const { data: { user } } = await supabase.auth.getUser()
+        if (user?.email) {
+            await supabase
+                .from('orders')
+                .update({ customer_phone: phone })
+                .eq('customer_email', user.email)
+        }
+
+        setLoading(false)
+        setIsEditingProfile(false)
+        setSuccessMessage('Profile settings updated successfully!')
+        setTimeout(() => setSuccessMessage(''), 4000)
     }
 
     const handleSaveAddress = async (e: React.FormEvent) => {
