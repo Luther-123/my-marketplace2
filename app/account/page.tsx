@@ -155,10 +155,8 @@ export default function AccountPage() {
             }
         })
 
-        const isProd = process.env.NODE_ENV === 'production'
-        const basePath = isProd ? '/my-marketplace2' : ''
-
-        router.push(`${basePath}/signin`)
+        // Push directly to root /signin since Vercel serves from the root domain
+        router.push('/signin')
     }
 
     return (
