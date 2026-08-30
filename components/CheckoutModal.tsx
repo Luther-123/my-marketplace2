@@ -14,9 +14,15 @@ export default function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; on
 
     const [checkoutItems, setCheckoutItems] = useState<any[]>([])
 
+    // Inside CheckoutModal.tsx, pre-populate and lock the email from Supabase auth
     useEffect(() => {
         if (isOpen) {
             setCheckoutItems([...cart])
+            supabase.auth.getUser().then(({ data: { user } }) => {
+                if (user?.email) {
+                    setFormData(prev => ({ ...prev, email: user.email! }))
+                }
+            })
         }
     }, [isOpen, cart])
 
@@ -153,10 +159,8 @@ export default function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; on
                                     <div className="mb-4">
                                         <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-1">Email Address</label>
                                         <input
-                                            type="email" required placeholder="john.doe@example.com"
-                                            value={formData.email}
-                                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                            className="w-full rounded-xl border px-3.5 py-2.5 text-sm focus:outline-none bg-white border-neutral-300 text-neutral-900 focus:border-neutral-500 placeholder-neutral-400"
+                                            type="email" required readOnly value={formData.email}
+                                            className="w-full rounded-xl border px-3.5 py-2.5 text-sm bg-neutral-100 border-neutral-300 text-neutral-600 cursor-not-allowed"
                                         />
                                     </div>
 

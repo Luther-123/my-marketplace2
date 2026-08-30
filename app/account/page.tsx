@@ -147,7 +147,13 @@ export default function AccountPage() {
 
     const handleLogout = async () => {
         await supabase.auth.signOut()
-        localStorage.clear()
+
+        // Remove only Supabase session tokens instead of wiping the entire localStorage
+        Object.keys(localStorage).forEach(key => {
+            if (key.startsWith('sb-')) {
+                localStorage.removeItem(key)
+            }
+        })
 
         const isProd = process.env.NODE_ENV === 'production'
         const basePath = isProd ? '/my-marketplace2' : ''
