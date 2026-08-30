@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useCart } from '@/context/CartContext'
-import { User, Lock, Bell, ShieldCheck, MapPin, LogOut, Save, HelpCircle, CheckCircle, Eye, EyeOff, Edit3, ShoppingCart, Package, Check, ChevronLeft, ChevronRight } from 'lucide-react'
+import { User, Lock, Bell, MapPin, LogOut, Save, HelpCircle, CheckCircle, Eye, EyeOff, Edit3, ShoppingCart, Package, Check, ChevronLeft, ChevronRight } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 
 interface Order {
@@ -19,7 +19,7 @@ interface Order {
 export default function AccountPage() {
     const router = useRouter()
     const { cartCount, setIsCartOpen } = useCart()
-    const [activeTab, setActiveTab] = useState<'profile' | 'orders' | 'address' | 'password' | 'notifications' | 'verification'>('profile')
+    const [activeTab, setActiveTab] = useState<'profile' | 'orders' | 'address' | 'password' | 'notifications'>('profile')
     const [loading, setLoading] = useState(false)
     const [successMessage, setSuccessMessage] = useState('')
 
@@ -308,12 +308,6 @@ export default function AccountPage() {
                                     className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl transition cursor-pointer ${activeTab === 'notifications' ? 'bg-[#FACC15] text-neutral-950 font-black shadow-sm' : 'text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100'}`}
                                 >
                                     <Bell className="w-4 h-4" /> Notifications
-                                </button>
-                                <button
-                                    onClick={() => setActiveTab('verification')}
-                                    className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl transition cursor-pointer ${activeTab === 'verification' ? 'bg-[#FACC15] text-neutral-950 font-black shadow-sm' : 'text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100'}`}
-                                >
-                                    <ShieldCheck className="w-4 h-4" /> Verification
                                 </button>
                             </nav>
                         </div>
@@ -690,28 +684,6 @@ export default function AccountPage() {
                                         className="mt-4 px-8 py-3.5 bg-[#FACC15] text-neutral-950 font-black text-xs uppercase tracking-wider rounded-2xl hover:bg-yellow-400 transition shadow-md cursor-pointer"
                                     >
                                         Save Preferences
-                                    </button>
-                                </div>
-                            </div>
-                        )}
-
-                        {activeTab === 'verification' && (
-                            <div>
-                                <div className="mb-8 pb-4 border-b border-neutral-200">
-                                    <h1 className="text-2xl font-black tracking-tight text-neutral-950">Account Verification</h1>
-                                    <p className="text-xs text-neutral-500 mt-1">Verify your identity for secure order fulfillment in Kenya.</p>
-                                </div>
-
-                                <div className="p-6 rounded-2xl border space-y-4 max-w-lg bg-neutral-50 border-neutral-200">
-                                    <div className="flex items-center gap-3 text-emerald-600 font-bold text-sm">
-                                        <ShieldCheck className="w-6 h-6" /> Phone Number Verified (+254 743 818 278)
-                                    </div>
-                                    <p className="text-xs text-neutral-600 leading-relaxed">Your account is fully verified via M-Pesa secure token checks. You are cleared for express order fulfillment nationwide.</p>
-                                    <button
-                                        onClick={() => alert('Identity verification documentation submitted!')}
-                                        className="px-6 py-3 bg-[#FACC15] text-neutral-950 font-black text-xs uppercase tracking-wider rounded-xl hover:bg-yellow-400 transition shadow-sm cursor-pointer"
-                                    >
-                                        Update KYC Documents
                                     </button>
                                 </div>
                             </div>
