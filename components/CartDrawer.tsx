@@ -27,6 +27,11 @@ export default function CartDrawer() {
         router.push('/checkout')
     }
 
+    const handleViewFullCart = () => {
+        setIsCartOpen(false)
+        router.push('/cart')
+    }
+
     return (
         <div className="fixed inset-0 z-50 overflow-hidden font-sans">
             <div className="absolute inset-0 bg-neutral-950/60 backdrop-blur-xs transition-opacity" onClick={() => setIsCartOpen(false)} />
@@ -92,6 +97,14 @@ export default function CartDrawer() {
                             className="w-full py-4 bg-[#FACC15] text-neutral-950 font-black text-xs uppercase tracking-wider rounded-xl hover:bg-yellow-400 transition shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                         >
                             Proceed to Checkout <ArrowRight className="w-4 h-4" />
+                        </button>
+
+                        <button
+                            disabled={cart.length === 0}
+                            onClick={handleViewFullCart}
+                            className="w-full py-3 bg-white text-neutral-900 border border-neutral-300 font-bold text-xs uppercase tracking-wider rounded-xl hover:bg-neutral-100 transition shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                        >
+                            View Full Shopping Cart
                         </button>
                     </div>
 
