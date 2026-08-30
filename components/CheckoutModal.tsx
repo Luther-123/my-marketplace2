@@ -8,14 +8,12 @@ import { supabase } from '@/lib/supabase'
 
 export default function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
     const router = useRouter()
-    const { cart, setIsCartOpen, clearCart } = useCart() // <-- 1. Pull clearCart here
+    const { cart, setIsCartOpen, clearCart } = useCart()
     const [isSubmitted, setIsSubmitted] = useState(false)
-    // ...
     const [paymentMethod, setPaymentMethod] = useState<'card' | 'mpesa' | 'apple'>('card')
 
     const [checkoutItems, setCheckoutItems] = useState<any[]>([])
 
-    // Inside CheckoutModal.tsx, pre-populate and lock the email from Supabase auth
     useEffect(() => {
         if (isOpen) {
             setCheckoutItems([...cart])
@@ -49,7 +47,7 @@ export default function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; on
     }
 
     const subtotal = checkoutItems.reduce((total, item) => total + (item.price * item.quantity), 0)
-    const shipping = subtotal > 500 || subtotal === 0 ? 0 : 15.00
+    const shipping = subtotal > 500 || subtotal === 0 ? 0 : 1500.00
     const tax = subtotal * 0.08
     const total = subtotal + shipping + tax
 
@@ -78,7 +76,7 @@ export default function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; on
             return
         }
 
-        clearCart() // <-- 2. Wipe the cart and localStorage immediately on success
+        clearCart()
         setIsSubmitted(true)
     }
 
@@ -284,7 +282,7 @@ export default function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; on
                                                         <h4 className="font-bold text-xs truncate text-neutral-950">{item.title}</h4>
                                                         <p className="text-[11px] text-neutral-500">Qty: {item.quantity}</p>
                                                     </div>
-                                                    <span className="text-xs font-black mr-2 text-neutral-950">${(item.price * item.quantity).toFixed(2)}</span>
+                                                    <span className="text-xs font-black mr-2 text-neutral-950">Ksh {(item.price * item.quantity).toLocaleString()}</span>
                                                     <button
                                                         type="button"
                                                         onClick={() => handleRemoveLocalItem(item.id)}
@@ -302,21 +300,21 @@ export default function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; on
                                     <div className="space-y-2.5 py-4 border-y text-xs border-neutral-200 text-neutral-600">
                                         <div className="flex justify-between">
                                             <span>Subtotal</span>
-                                            <span className="font-bold text-neutral-900">${subtotal.toFixed(2)}</span>
+                                            <span className="font-bold text-neutral-900">Ksh {subtotal.toLocaleString()}</span>
                                         </div>
                                         <div className="flex justify-between">
                                             <span>Shipping</span>
-                                            <span className="font-bold text-neutral-900">{shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}</span>
+                                            <span className="font-bold text-neutral-900">{shipping === 0 ? 'FREE' : `Ksh ${shipping.toLocaleString()}`}</span>
                                         </div>
                                         <div className="flex justify-between">
                                             <span>Estimated Tax (8%)</span>
-                                            <span className="font-bold text-neutral-900">${tax.toFixed(2)}</span>
+                                            <span className="font-bold text-neutral-900">Ksh {tax.toLocaleString()}</span>
                                         </div>
                                     </div>
 
                                     <div className="flex items-center justify-between py-4 text-base font-black">
                                         <span className="text-neutral-950">Total Amount</span>
-                                        <span className="text-xl text-neutral-950">${total.toFixed(2)}</span>
+                                        <span className="text-xl text-neutral-950">Ksh {total.toLocaleString()}</span>
                                     </div>
 
                                     {/* Action Buttons */}

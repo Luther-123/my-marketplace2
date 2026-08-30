@@ -11,7 +11,7 @@ export default function CartPage() {
     const { cart, updateQuantity, removeFromCart, cartCount, setIsCartOpen, clearCart } = useCart()
 
     const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0)
-    const shipping = subtotal > 500 || subtotal === 0 ? 0 : 15.00
+    const shipping = subtotal > 500 || subtotal === 0 ? 0 : 1500.00
     const tax = subtotal * 0.08
     const total = subtotal + shipping + tax
 
@@ -132,7 +132,7 @@ export default function CartPage() {
                                                 </button>
                                             </div>
                                         </div>
-                                        <div className="col-span-2 text-center text-sm font-bold text-neutral-900">${item.price}</div>
+                                        <div className="col-span-2 text-center text-sm font-bold text-neutral-900">Ksh {item.price?.toLocaleString()}</div>
                                         <div className="col-span-2 flex items-center justify-center gap-2">
                                             <button
                                                 onClick={() => updateQuantity(item.id, item.quantity - 1)}
@@ -148,7 +148,7 @@ export default function CartPage() {
                                                 +
                                             </button>
                                         </div>
-                                        <div className="col-span-2 text-right text-sm font-black text-neutral-900">${(item.price * item.quantity).toFixed(2)}</div>
+                                        <div className="col-span-2 text-right text-sm font-black text-neutral-900">Ksh {(item.price * item.quantity).toLocaleString()}</div>
                                     </div>
                                 ))}
                             </div>
@@ -164,16 +164,16 @@ export default function CartPage() {
                                 </div>
                                 <div className="flex justify-between">
                                     <span>Subtotal</span>
-                                    <span className="font-bold text-neutral-900">${subtotal.toFixed(2)}</span>
+                                    <span className="font-bold text-neutral-900">Ksh {subtotal.toLocaleString()}</span>
                                 </div>
                                 <div className="flex justify-between">
                                     <span>Shipping</span>
-                                    <span className="font-bold text-neutral-900">{shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}</span>
+                                    <span className="font-bold text-neutral-900">{shipping === 0 ? 'Free' : `Ksh ${shipping.toLocaleString()}`}</span>
                                 </div>
                             </div>
                             <div className="flex items-center justify-between py-2 text-base font-black">
                                 <span className="text-neutral-950">Total Amount</span>
-                                <span className="text-xl text-neutral-950">${total.toFixed(2)}</span>
+                                <span className="text-xl text-neutral-950">Ksh {total.toLocaleString()}</span>
                             </div>
                             <button
                                 onClick={handleCheckout}

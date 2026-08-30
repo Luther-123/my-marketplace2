@@ -61,7 +61,7 @@ export default function CartDrawer() {
                                         <div className="flex-1">
                                             <h4 className="font-bold text-sm line-clamp-1 text-neutral-950">{item.title}</h4>
                                             <p className="text-xs text-neutral-500 mt-0.5">Qty: {item.quantity}</p>
-                                            <p className="text-xs font-black mt-1 text-neutral-950">${(item.price * item.quantity).toFixed(2)}</p>
+                                            <p className="text-xs font-black mt-1 text-neutral-950">Ksh {(item.price * item.quantity).toLocaleString()}</p>
                                         </div>
                                         <button onClick={() => removeFromCart(item.id)} className="p-2 text-neutral-400 hover:text-rose-500 transition cursor-pointer">
                                             <Trash2 className="w-4 h-4" />
@@ -75,7 +75,7 @@ export default function CartDrawer() {
                         <div className="p-6 border-t bg-neutral-50 border-neutral-100">
                             <div className="flex items-center justify-between mb-4">
                                 <span className="text-xs font-bold text-neutral-500 uppercase tracking-wider">Subtotal</span>
-                                <span className="text-xl font-black text-neutral-950">${subtotal.toFixed(2)}</span>
+                                <span className="text-xl font-black text-neutral-950">Ksh {subtotal.toLocaleString()}</span>
                             </div>
                             <button
                                 disabled={cart.length === 0}
