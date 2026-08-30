@@ -447,14 +447,14 @@ export default function AccountPage() {
                                                         {order.items?.map((item, idx) => (
                                                             <div key={idx} className="flex justify-between items-center text-xs">
                                                                 <span className="font-medium text-neutral-900">{item.title} <span className="text-neutral-500">x{item.quantity}</span></span>
-                                                                <span className="font-bold text-neutral-950">${(item.price * item.quantity).toFixed(2)}</span>
+                                                                <span className="font-bold text-neutral-950">Ksh {(item.price * item.quantity).toLocaleString()}</span>
                                                             </div>
                                                         ))}
                                                     </div>
 
                                                     <div className="pt-3 border-t border-neutral-200 flex justify-between items-center text-sm font-black">
                                                         <span className="text-neutral-950">Total Paid</span>
-                                                        <span className="text-neutral-950">${order.total_amount?.toFixed(2)}</span>
+                                                        <span className="text-neutral-950">Ksh {order.total_amount?.toLocaleString()}</span>
                                                     </div>
                                                 </div>
                                             ))}
