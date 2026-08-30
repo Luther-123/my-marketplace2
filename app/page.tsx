@@ -5,14 +5,14 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { useCart } from '@/context/CartContext'
-import { ArrowRight, ShoppingBag, Menu, Search, Moon, Sun, Sparkles, ShoppingCart, User, Mail } from 'lucide-react'
+import { ArrowRight, ShoppingBag, Menu, Search, Sparkles, ShoppingCart, User, Mail } from 'lucide-react'
 
 export default function Home() {
   const router = useRouter()
   const [products, setProducts] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
-  const { cartCount, addToCart, setIsCartOpen, darkMode, setDarkMode } = useCart()
+  const { cartCount, addToCart, setIsCartOpen } = useCart()
 
   useEffect(() => {
     async function fetchProducts() {
@@ -34,21 +34,21 @@ export default function Home() {
   )
 
   return (
-    <div className={`${darkMode ? 'bg-neutral-950 text-white' : 'bg-white text-neutral-900'} min-h-screen font-sans transition-colors duration-300 selection:bg-[#FACC15] selection:text-neutral-950`}>
+    <div className="min-h-screen font-sans bg-neutral-100 text-neutral-900 transition-colors duration-300 selection:bg-[#FACC15] selection:text-neutral-950">
 
       {/* ================= NAVBAR ================= */}
-      <header className={`sticky top-0 z-50 backdrop-blur-md border-b transition-colors duration-300 ${darkMode ? 'bg-neutral-950/80 border-neutral-800' : 'bg-white/80 border-neutral-100'}`}>
+      <header className="sticky top-0 z-50 backdrop-blur-md border-b bg-white/80 border-neutral-200 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between gap-4">
 
           <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => router.push('/')}>
             <div className="w-10 h-10 rounded-lg bg-[#FACC15] flex items-center justify-center text-neutral-950 font-black text-xl tracking-tighter shadow-sm">
               P
             </div>
-            <span className={`text-xl font-black tracking-tight ${darkMode ? 'text-white' : 'text-neutral-950'}`}>plugKe</span>
+            <span className="text-xl font-black tracking-tight text-neutral-950">plugKe</span>
           </div>
 
           <div className="hidden md:flex items-center flex-1 max-w-sm mx-4">
-            <div className={`relative w-full flex items-center rounded-xl border transition ${darkMode ? 'bg-neutral-900 border-neutral-800 text-white focus-within:border-yellow-400' : 'bg-neutral-50 border-neutral-200 text-neutral-900 focus-within:border-neutral-400'}`}>
+            <div className="relative w-full flex items-center rounded-xl border bg-neutral-50 border-neutral-200 text-neutral-900 focus-within:border-neutral-400 transition">
               <Search className="w-4 h-4 ml-3.5 text-neutral-400" />
               <input
                 type="text"
@@ -60,13 +60,13 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Nav Icons & Actions: Cart, Account, Help, Dark Mode */}
+          {/* Nav Icons & Actions: Cart, Account, Help */}
           <div className="flex items-center gap-2 sm:gap-3">
 
             {/* Help */}
             <Link
               href="/help"
-              className={`hidden lg:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition ${darkMode ? 'text-neutral-300 hover:bg-neutral-900' : 'text-neutral-600 hover:bg-neutral-100'}`}
+              className="hidden lg:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition text-neutral-600 hover:bg-neutral-100"
             >
               <Mail className="w-4 h-4" /> Help
             </Link>
@@ -74,7 +74,7 @@ export default function Home() {
             {/* Account */}
             <button
               onClick={() => router.push('/account')}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition ${darkMode ? 'text-neutral-300 hover:bg-neutral-900' : 'text-neutral-600 hover:bg-neutral-100'}`}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition text-neutral-600 hover:bg-neutral-100 cursor-pointer"
               aria-label="Account"
             >
               <User className="w-4 h-4" /> <span className="hidden sm:inline">Account</span>
@@ -83,7 +83,7 @@ export default function Home() {
             {/* Cart Button (Opens Drawer) */}
             <button
               onClick={() => setIsCartOpen(true)}
-              className={`relative flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${darkMode ? 'bg-neutral-900 text-yellow-400 border border-neutral-800 hover:bg-neutral-800' : 'bg-neutral-100 text-neutral-900 hover:bg-neutral-200'}`}
+              className="relative flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition cursor-pointer bg-neutral-100 text-neutral-900 hover:bg-neutral-200 border border-neutral-200"
               aria-label="Cart"
             >
               <ShoppingCart className="w-4 h-4" />
@@ -95,16 +95,7 @@ export default function Home() {
               )}
             </button>
 
-            {/* Theme Toggle */}
-            <button
-              onClick={() => setDarkMode(!darkMode)}
-              className={`p-2.5 rounded-xl border transition ${darkMode ? 'bg-neutral-900 border-neutral-800 text-yellow-400 hover:bg-neutral-800' : 'bg-neutral-50 border-neutral-200 text-neutral-700 hover:bg-neutral-100'}`}
-              aria-label="Toggle Dark Mode"
-            >
-              {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-            </button>
-
-            <div className={`md:hidden p-2 cursor-pointer ${darkMode ? 'text-white' : 'text-neutral-800'}`}>
+            <div className="md:hidden p-2 cursor-pointer text-neutral-800">
               <Menu className="w-6 h-6" />
             </div>
           </div>
@@ -113,7 +104,7 @@ export default function Home() {
       </header>
 
       <div className="md:hidden px-6 pt-4">
-        <div className={`relative w-full flex items-center rounded-xl border transition ${darkMode ? 'bg-neutral-900 border-neutral-800 text-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900'}`}>
+        <div className="relative w-full flex items-center rounded-xl border bg-neutral-50 border-neutral-200 text-neutral-900">
           <Search className="w-4 h-4 ml-3.5 text-neutral-400" />
           <input
             type="text"
@@ -127,23 +118,23 @@ export default function Home() {
 
       {/* ================= HERO SECTION ================= */}
       <section className="max-w-7xl mx-auto px-6 pt-8 pb-16">
-        <div className={`rounded-2xl border flex flex-col lg:flex-row items-center justify-between p-8 sm:p-16 overflow-hidden transition-colors duration-300 ${darkMode ? 'bg-neutral-900 border-neutral-800' : 'bg-[#FEFCE8] border-yellow-100'}`}>
+        <div className="rounded-2xl border flex flex-col lg:flex-row items-center justify-between p-8 sm:p-16 overflow-hidden transition-colors duration-300 bg-[#FEFCE8] border-yellow-200 shadow-sm">
 
           <div className="max-w-xl z-10 mb-10 lg:mb-0">
-            <div className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider mb-6 ${darkMode ? 'bg-neutral-800 text-yellow-400' : 'bg-yellow-100 text-yellow-800'}`}>
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider mb-6 bg-yellow-100 text-yellow-800">
               <Sparkles className="w-3.5 h-3.5" /> Curated Marketplace
             </div>
-            <h1 className={`text-4xl sm:text-6xl font-black leading-[1.05] tracking-tight mb-6 ${darkMode ? 'text-white' : 'text-neutral-950'}`}>
+            <h1 className="text-4xl sm:text-6xl font-black leading-[1.05] tracking-tight mb-6 text-neutral-950">
               Your Ultimate <br />Plug for Everything.
             </h1>
-            <p className={`text-base sm:text-lg mb-8 font-normal ${darkMode ? 'text-neutral-400' : 'text-neutral-600'}`}>
+            <p className="text-base sm:text-lg mb-8 font-normal text-neutral-600">
               Discover a diverse selection of high-end tech, stylish apparel, and minimalist home furniture.
             </p>
 
             <div className="flex flex-wrap items-center gap-4">
               <button
                 onClick={() => window.scrollTo({ top: 800, behavior: 'smooth' })}
-                className={`flex items-center gap-3 px-7 py-4 font-bold rounded-xl shadow-md transition cursor-pointer ${darkMode ? 'bg-[#FACC15] text-neutral-950 hover:bg-yellow-400' : 'bg-neutral-950 text-white hover:bg-neutral-800'}`}
+                className="flex items-center gap-3 px-7 py-4 font-bold rounded-xl shadow-md transition cursor-pointer bg-neutral-950 text-white hover:bg-neutral-800"
               >
                 Explore Catalog <ArrowRight className="w-4 h-4" />
               </button>
@@ -157,14 +148,14 @@ export default function Home() {
           </div>
 
           <div className="relative w-full lg:w-1/2 grid grid-cols-2 gap-4">
-            <div className={`h-48 sm:h-60 rounded-xl overflow-hidden shadow-sm border ${darkMode ? 'bg-neutral-950 border-neutral-800' : 'bg-white border-yellow-200'}`}>
+            <div className="h-48 sm:h-60 rounded-xl overflow-hidden shadow-sm border bg-white border-yellow-200">
               <img
                 src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80"
                 alt="Gadgets"
                 className="w-full h-full object-cover hover:scale-105 transition duration-500"
               />
             </div>
-            <div className={`h-48 sm:h-60 rounded-xl overflow-hidden shadow-sm border mt-6 ${darkMode ? 'bg-neutral-950 border-neutral-800' : 'bg-white border-yellow-200'}`}>
+            <div className="h-48 sm:h-60 rounded-xl overflow-hidden shadow-sm border mt-6 bg-white border-yellow-200">
               <img
                 src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=600&q=80"
                 alt="Furniture"
@@ -182,11 +173,11 @@ export default function Home() {
             { title: "Apparel & Wear", count: "15+ Items", icon: "🧥" },
             { title: "Home Decor", count: "10+ Items", icon: "🪴" },
           ].map((cat, idx) => (
-            <div key={idx} className={`p-5 rounded-xl border transition cursor-pointer flex items-center gap-4 ${darkMode ? 'bg-neutral-900 border-neutral-800 hover:border-yellow-400/50' : 'bg-neutral-50 border-neutral-100 hover:bg-yellow-50/50 hover:border-yellow-200'}`}>
+            <div key={idx} className="p-5 rounded-xl border transition cursor-pointer flex items-center gap-4 bg-white border-neutral-200 hover:bg-yellow-50/50 hover:border-yellow-200 shadow-sm">
               <span className="text-2xl">{cat.icon}</span>
               <div>
-                <h3 className={`font-bold text-sm ${darkMode ? 'text-white' : 'text-neutral-900'}`}>{cat.title}</h3>
-                <p className="text-xs text-neutral-400">{cat.count}</p>
+                <h3 className="font-bold text-sm text-neutral-900">{cat.title}</h3>
+                <p className="text-xs text-neutral-500">{cat.count}</p>
               </div>
             </div>
           ))}
@@ -194,10 +185,10 @@ export default function Home() {
       </section>
 
       {/* ================= TRENDING CATEGORIES ================= */}
-      <section className={`py-12 border-y mb-16 transition-colors duration-300 ${darkMode ? 'bg-neutral-900/40 border-neutral-800' : 'bg-neutral-50/50 border-neutral-100'}`}>
+      <section className="py-12 border-y mb-16 transition-colors duration-300 bg-neutral-50 border-neutral-200">
         <div className="max-w-7xl mx-auto px-6 mb-8">
-          <h2 className={`text-2xl sm:text-3xl font-black ${darkMode ? 'text-white' : 'text-neutral-950'}`}>Trending Categories</h2>
-          <p className="text-neutral-400 text-sm">Explore across different collections curated just for you.</p>
+          <h2 className="text-2xl sm:text-3xl font-black text-neutral-950">Trending Categories</h2>
+          <p className="text-neutral-500 text-sm">Explore across different collections curated just for you.</p>
         </div>
 
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -208,19 +199,16 @@ export default function Home() {
           ].map((col, idx) => (
             <div
               key={idx}
-              className={`group relative rounded-xl overflow-hidden h-[380px] flex flex-col justify-end p-8 cursor-pointer transition-all duration-300 border ${darkMode
-                ? 'bg-neutral-900 border-neutral-800 hover:-translate-y-3 hover:shadow-[0_20px_40px_-15px_rgba(250,204,21,0.15)] hover:border-yellow-400/50'
-                : 'bg-white border-neutral-200 hover:-translate-y-3 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15)] hover:border-neutral-400'
-                }`}
+              className="group relative rounded-xl overflow-hidden h-[380px] flex flex-col justify-end p-8 cursor-pointer transition-all duration-300 border bg-white border-neutral-200 hover:-translate-y-3 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15)] hover:border-neutral-400 shadow-sm"
             >
-              <img src={col.img} alt={col.name} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition duration-500" />
-              <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/95 via-neutral-950/40 to-transparent" />
+              <img src={col.img} alt={col.name} className="absolute inset-0 w-full h-full object-cover opacity-75 group-hover:scale-105 transition duration-500" />
+              <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-neutral-950/30 to-transparent" />
               <div className="relative z-10 text-white">
                 <span className="inline-block px-3 py-1 rounded-md bg-[#FACC15] text-neutral-950 text-xs font-black uppercase mb-3 tracking-wider">
                   {col.tag}
                 </span>
                 <h3 className="text-2xl font-black mb-2 tracking-tight">{col.name}</h3>
-                <p className="text-sm text-neutral-300 font-light leading-relaxed">{col.desc}</p>
+                <p className="text-sm text-neutral-200 font-light leading-relaxed">{col.desc}</p>
               </div>
             </div>
           ))}
@@ -231,40 +219,40 @@ export default function Home() {
       <section className="max-w-7xl mx-auto px-6 py-12 mb-20">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className={`text-2xl sm:text-3xl font-black ${darkMode ? 'text-white' : 'text-neutral-950'}`}>Live Inventory</h2>
-            <p className="text-neutral-400 text-sm">Fetched directly from your live database tables.</p>
+            <h2 className="text-2xl sm:text-3xl font-black text-neutral-950">Live Inventory</h2>
+            <p className="text-neutral-500 text-sm">Fetched directly from your live database tables.</p>
           </div>
         </div>
 
         {loading ? (
-          <div className="p-12 text-center text-neutral-400">Loading catalog items...</div>
+          <div className="p-12 text-center text-neutral-500">Loading catalog items...</div>
         ) : filteredProducts.length === 0 ? (
-          <div className={`p-12 rounded-2xl border text-center transition-colors duration-300 ${darkMode ? 'bg-neutral-900 border-neutral-800 text-neutral-300' : 'bg-neutral-50 border-neutral-200 text-neutral-700'}`}>
+          <div className="p-12 rounded-2xl border text-center transition-colors duration-300 bg-white border-neutral-200 text-neutral-700 shadow-sm">
             <p className="font-medium mb-1">No products match your search criteria.</p>
-            <p className="text-xs text-neutral-400">Try adjusting your search terms or add items to your Supabase table.</p>
+            <p className="text-xs text-neutral-500">Try adjusting your search terms or add items to your Supabase table.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {filteredProducts.map((product: any) => (
-              <div key={product.id} className={`rounded-2xl p-5 border shadow-sm hover:shadow-md transition flex flex-col justify-between group ${darkMode ? 'bg-neutral-900 border-neutral-800' : 'bg-white border-neutral-100'}`}>
+              <div key={product.id} className="rounded-2xl p-5 border shadow-sm hover:shadow-md transition flex flex-col justify-between group bg-white border-neutral-200">
                 <div>
                   {product.image_url ? (
-                    <img src={product.image_url} alt={product.title} className="w-full h-48 rounded-xl object-cover mb-4 group-hover:scale-105 transition duration-300" />
+                    <img src={product.image_url} alt={product.title} className="w-full h-48 rounded-xl object-cover mb-4 group-hover:scale-105 transition duration-300 border border-neutral-100" />
                   ) : (
-                    <div className={`w-full h-48 rounded-xl mb-4 overflow-hidden flex items-center justify-center border ${darkMode ? 'bg-neutral-950 border-neutral-800 text-neutral-600' : 'bg-neutral-50 border-neutral-100 text-neutral-400'}`}>
+                    <div className="w-full h-48 rounded-xl mb-4 overflow-hidden flex items-center justify-center border bg-neutral-50 border-neutral-200 text-neutral-400">
                       <ShoppingBag className="w-8 h-8 opacity-20 group-hover:scale-110 transition duration-300" />
                     </div>
                   )}
-                  <h3 className={`font-bold text-base mb-1 ${darkMode ? 'text-white' : 'text-neutral-950'}`}>{product.title}</h3>
-                  <p className="text-neutral-400 text-xs line-clamp-2 mb-4 font-light">{product.description || "No description provided."}</p>
+                  <h3 className="font-bold text-base mb-1 text-neutral-950">{product.title}</h3>
+                  <p className="text-neutral-500 text-xs line-clamp-2 mb-4 font-light">{product.description || "No description provided."}</p>
                 </div>
 
-                <div className={`flex items-center justify-between pt-4 border-t ${darkMode ? 'border-neutral-800' : 'border-neutral-100'}`}>
-                  <span className={`text-lg font-black ${darkMode ? 'text-white' : 'text-neutral-950'}`}>${product.price}</span>
+                <div className="flex items-center justify-between pt-4 border-t border-neutral-100">
+                  <span className="text-lg font-black text-neutral-950">${product.price}</span>
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => router.push(`/products/${product.id}`)}
-                      className={`px-3 py-2 text-xs font-bold rounded-xl transition border ${darkMode ? 'border-neutral-700 text-neutral-300 hover:bg-neutral-800' : 'border-neutral-200 text-neutral-700 hover:bg-neutral-100'}`}
+                      className="px-3 py-2 text-xs font-bold rounded-xl transition border border-neutral-200 text-neutral-700 hover:bg-neutral-100 cursor-pointer"
                     >
                       View
                     </button>
@@ -283,48 +271,48 @@ export default function Home() {
       </section>
 
       {/* ================= FOOTER / DIRECTORY SECTION ================= */}
-      <footer id="contact" className="bg-neutral-950 text-white border-t border-neutral-900 transition-colors duration-300">
+      <footer id="contact" className="bg-white text-neutral-600 border-t border-neutral-200 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-4 gap-8 text-xs">
           <div>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 rounded-xl bg-[#FACC15] flex items-center justify-center text-neutral-950 font-black text-lg">
                 P
               </div>
-              <span className="text-lg font-black tracking-tight text-white">plugKe</span>
+              <span className="text-lg font-black tracking-tight text-neutral-950">plugKe</span>
             </div>
-            <p className="text-[11px] leading-relaxed text-neutral-400">Your ultimate destination for high-end tech, stylish apparel, and minimalist home furniture in Kenya.</p>
+            <p className="text-[11px] leading-relaxed text-neutral-500">Your ultimate destination for high-end tech, stylish apparel, and minimalist home furniture in Kenya.</p>
           </div>
 
           <div>
-            <h4 className="font-black text-sm text-white mb-4 uppercase tracking-wider">Company</h4>
-            <ul className="space-y-2.5 font-semibold text-neutral-400">
-              <li><Link href="/" className="hover:text-[#FACC15] transition">Home Catalog</Link></li>
-              <li><Link href="/cart" className="hover:text-[#FACC15] transition">Shopping Cart</Link></li>
-              <li><Link href="/account" className="hover:text-[#FACC15] transition">Account Dashboard</Link></li>
+            <h4 className="font-black text-sm text-neutral-950 mb-4 uppercase tracking-wider">Company</h4>
+            <ul className="space-y-2.5 font-semibold text-neutral-600">
+              <li><Link href="/" className="hover:text-neutral-950 transition">Home Catalog</Link></li>
+              <li><Link href="/cart" className="hover:text-neutral-950 transition">Shopping Cart</Link></li>
+              <li><Link href="/account" className="hover:text-neutral-950 transition">Account Dashboard</Link></li>
             </ul>
           </div>
 
           <div>
-            <h4 className="font-black text-sm text-white mb-4 uppercase tracking-wider">Customer Services</h4>
-            <ul className="space-y-2.5 font-semibold text-neutral-400">
-              <li><Link href="/account" className="hover:text-[#FACC15] transition">Profile Settings</Link></li>
-              <li><Link href="/help" className="hover:text-[#FACC15] transition">Help Center</Link></li>
+            <h4 className="font-black text-sm text-neutral-950 mb-4 uppercase tracking-wider">Customer Services</h4>
+            <ul className="space-y-2.5 font-semibold text-neutral-600">
+              <li><Link href="/account" className="hover:text-neutral-950 transition">Profile Settings</Link></li>
+              <li><Link href="/help" className="hover:text-neutral-950 transition">Help Center</Link></li>
             </ul>
           </div>
 
           <div>
-            <h4 className="font-black text-sm text-white mb-4 uppercase tracking-wider">Contact Info</h4>
-            <p className="font-semibold text-neutral-400 mb-2">+254 712 345 678</p>
-            <p className="font-semibold text-neutral-400 mb-2">support@plugke.co.ke</p>
+            <h4 className="font-black text-sm text-neutral-950 mb-4 uppercase tracking-wider">Contact Info</h4>
+            <p className="font-semibold text-neutral-600 mb-2">+254 712 345 678</p>
+            <p className="font-semibold text-neutral-600 mb-2">support@plugke.co.ke</p>
             <p className="text-[11px] text-neutral-500">Nairobi, Kenya</p>
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-6 py-6 border-t border-neutral-900 flex flex-col sm:flex-row items-center justify-between text-xs text-neutral-500">
+        <div className="max-w-7xl mx-auto px-6 py-6 border-t border-neutral-200 flex flex-col sm:flex-row items-center justify-between text-xs text-neutral-500">
           <p>© 2026 plugKe. All rights reserved. Powered by Next.js & Supabase.</p>
           <div className="flex gap-6 mt-4 sm:mt-0">
-            <a href="#" className="hover:text-white transition">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition">Terms of Service</a>
+            <a href="#" className="hover:text-neutral-950 transition">Privacy Policy</a>
+            <a href="#" className="hover:text-neutral-950 transition">Terms of Service</a>
           </div>
         </div>
       </footer>

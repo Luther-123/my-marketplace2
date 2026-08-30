@@ -8,7 +8,7 @@ import { supabase } from '@/lib/supabase'
 
 export default function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
     const router = useRouter()
-    const { cart, setIsCartOpen, darkMode } = useCart()
+    const { cart, setIsCartOpen } = useCart()
     const [isSubmitted, setIsSubmitted] = useState(false)
     const [paymentMethod, setPaymentMethod] = useState<'card' | 'mpesa' | 'apple'>('card')
 
@@ -78,20 +78,20 @@ export default function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; on
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 font-sans overflow-y-auto">
             <div className="absolute inset-0 bg-neutral-950/70 backdrop-blur-xs" onClick={onClose} />
 
-            <div className={`relative w-full max-w-5xl rounded-3xl shadow-2xl overflow-hidden z-10 transition-colors duration-300 max-h-[90vh] flex flex-col ${darkMode ? 'bg-neutral-900 text-white border border-neutral-800' : 'bg-white text-neutral-900'}`}>
+            <div className="relative w-full max-w-5xl rounded-3xl shadow-2xl overflow-hidden z-10 transition-colors duration-300 max-h-[90vh] flex flex-col bg-white text-neutral-900 border border-neutral-200">
 
                 {/* Top Header Bar */}
-                <div className={`p-6 border-b flex items-center justify-between shrink-0 ${darkMode ? 'border-neutral-800' : 'border-neutral-100'}`}>
+                <div className="p-6 border-b flex items-center justify-between shrink-0 border-neutral-200">
                     <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-lg bg-[#FACC15] flex items-center justify-center text-neutral-950 font-black text-sm">
                             P
                         </div>
-                        <span className="font-black text-lg tracking-tight">plugKe Cart & Checkout</span>
+                        <span className="font-black text-lg tracking-tight text-neutral-950">plugKe Cart & Checkout</span>
                     </div>
-                    <div className="flex items-center gap-2 text-xs font-semibold text-emerald-500 bg-emerald-500/10 px-3 py-1.5 rounded-full">
+                    <div className="flex items-center gap-2 text-xs font-semibold text-emerald-600 bg-emerald-500/10 px-3 py-1.5 rounded-full">
                         <Lock className="w-3.5 h-3.5" /> Secure Checkout
                     </div>
-                    <button onClick={onClose} className="p-2 text-neutral-400 hover:text-neutral-500 transition cursor-pointer">
+                    <button onClick={onClose} className="p-2 text-neutral-400 hover:text-neutral-700 transition cursor-pointer">
                         <X className="w-5 h-5" />
                     </button>
                 </div>
@@ -100,12 +100,12 @@ export default function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; on
                 <div className="flex-1 overflow-y-auto p-6 md:p-8">
                     {isSubmitted ? (
                         <div className="py-16 text-center flex flex-col items-center justify-center space-y-4">
-                            <div className="w-16 h-16 rounded-full bg-yellow-400/10 text-[#FACC15] flex items-center justify-center">
+                            <div className="w-16 h-16 rounded-full bg-yellow-100 text-yellow-800 flex items-center justify-center">
                                 <CheckCircle className="w-10 h-10" />
                             </div>
-                            <h2 className="text-3xl font-black">Order Placed Successfully!</h2>
-                            <p className={`text-sm max-w-md ${darkMode ? 'text-neutral-400' : 'text-neutral-600'}`}>
-                                Thank you, <span className={`font-bold ${darkMode ? 'text-neutral-200' : 'text-neutral-900'}`}>{formData.firstName} {formData.lastName}</span>. Your order is confirmed and will be shipped to <span className={`font-bold ${darkMode ? 'text-neutral-200' : 'text-neutral-900'}`}>{formData.address}, {formData.city}</span>.
+                            <h2 className="text-3xl font-black text-neutral-950">Order Placed Successfully!</h2>
+                            <p className="text-sm max-w-md text-neutral-600">
+                                Thank you, <span className="font-bold text-neutral-950">{formData.firstName} {formData.lastName}</span>. Your order is confirmed and will be shipped to <span className="font-bold text-neutral-950">{formData.address}, {formData.city}</span>.
                             </p>
                             <button
                                 onClick={() => {
@@ -126,132 +126,132 @@ export default function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; on
                             <div className="lg:col-span-7 space-y-6">
 
                                 {/* Shipping Information Section */}
-                                <div className={`p-6 rounded-2xl border ${darkMode ? 'bg-neutral-950 border-neutral-800' : 'bg-neutral-50 border-neutral-200'}`}>
-                                    <h3 className="text-base font-black mb-4">Shipping Information</h3>
+                                <div className="p-6 rounded-2xl border bg-neutral-50 border-neutral-200">
+                                    <h3 className="text-base font-black mb-4 text-neutral-950">Shipping Information</h3>
 
                                     <div className="grid grid-cols-2 gap-4 mb-4">
                                         <div>
-                                            <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-1">First Name</label>
+                                            <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-1">First Name</label>
                                             <input
                                                 type="text" required placeholder="John"
                                                 value={formData.firstName}
                                                 onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                                                className={`w-full rounded-xl border px-3.5 py-2.5 text-sm focus:outline-none ${darkMode ? 'bg-neutral-900 border-neutral-700 focus:border-yellow-400' : 'bg-white border-neutral-300 focus:border-neutral-500'}`}
+                                                className="w-full rounded-xl border px-3.5 py-2.5 text-sm focus:outline-none bg-white border-neutral-300 text-neutral-900 focus:border-neutral-500 placeholder-neutral-400"
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-1">Last Name</label>
+                                            <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-1">Last Name</label>
                                             <input
                                                 type="text" required placeholder="Doe"
                                                 value={formData.lastName}
                                                 onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                                                className={`w-full rounded-xl border px-3.5 py-2.5 text-sm focus:outline-none ${darkMode ? 'bg-neutral-900 border-neutral-700 focus:border-yellow-400' : 'bg-white border-neutral-300 focus:border-neutral-500'}`}
+                                                className="w-full rounded-xl border px-3.5 py-2.5 text-sm focus:outline-none bg-white border-neutral-300 text-neutral-900 focus:border-neutral-500 placeholder-neutral-400"
                                             />
                                         </div>
                                     </div>
 
                                     <div className="mb-4">
-                                        <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-1">Email Address</label>
+                                        <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-1">Email Address</label>
                                         <input
                                             type="email" required placeholder="john.doe@example.com"
                                             value={formData.email}
                                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                            className={`w-full rounded-xl border px-3.5 py-2.5 text-sm focus:outline-none ${darkMode ? 'bg-neutral-900 border-neutral-700 focus:border-yellow-400' : 'bg-white border-neutral-300 focus:border-neutral-500'}`}
+                                            className="w-full rounded-xl border px-3.5 py-2.5 text-sm focus:outline-none bg-white border-neutral-300 text-neutral-900 focus:border-neutral-500 placeholder-neutral-400"
                                         />
                                     </div>
 
                                     <div className="mb-4">
-                                        <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-1">Street Address</label>
+                                        <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-1">Street Address</label>
                                         <input
                                             type="text" required placeholder="123 Main Street"
                                             value={formData.address}
                                             onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                                            className={`w-full rounded-xl border px-3.5 py-2.5 text-sm focus:outline-none ${darkMode ? 'bg-neutral-900 border-neutral-700 focus:border-yellow-400' : 'bg-white border-neutral-300 focus:border-neutral-500'}`}
+                                            className="w-full rounded-xl border px-3.5 py-2.5 text-sm focus:outline-none bg-white border-neutral-300 text-neutral-900 focus:border-neutral-500 placeholder-neutral-400"
                                         />
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-4 mb-4">
                                         <div>
-                                            <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-1">City</label>
+                                            <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-1">City</label>
                                             <input
                                                 type="text" required placeholder="Nairobi"
                                                 value={formData.city}
                                                 onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                                                className={`w-full rounded-xl border px-3.5 py-2.5 text-sm focus:outline-none ${darkMode ? 'bg-neutral-900 border-neutral-700 focus:border-yellow-400' : 'bg-white border-neutral-300 focus:border-neutral-500'}`}
+                                                className="w-full rounded-xl border px-3.5 py-2.5 text-sm focus:outline-none bg-white border-neutral-300 text-neutral-900 focus:border-neutral-500 placeholder-neutral-400"
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-1">Postal Code</label>
+                                            <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-1">Postal Code</label>
                                             <input
                                                 type="text" required placeholder="00100"
                                                 value={formData.zip}
                                                 onChange={(e) => setFormData({ ...formData, zip: e.target.value })}
-                                                className={`w-full rounded-xl border px-3.5 py-2.5 text-sm focus:outline-none ${darkMode ? 'bg-neutral-900 border-neutral-700 focus:border-yellow-400' : 'bg-white border-neutral-300 focus:border-neutral-500'}`}
+                                                className="w-full rounded-xl border px-3.5 py-2.5 text-sm focus:outline-none bg-white border-neutral-300 text-neutral-900 focus:border-neutral-500 placeholder-neutral-400"
                                             />
                                         </div>
                                     </div>
 
                                     <div>
-                                        <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-1">Phone Number</label>
+                                        <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-1">Phone Number</label>
                                         <input
                                             type="tel" required placeholder="+254 712 345 678"
                                             value={formData.phone}
                                             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                            className={`w-full rounded-xl border px-3.5 py-2.5 text-sm focus:outline-none ${darkMode ? 'bg-neutral-900 border-neutral-700 focus:border-yellow-400' : 'bg-white border-neutral-300 focus:border-neutral-500'}`}
+                                            className="w-full rounded-xl border px-3.5 py-2.5 text-sm focus:outline-none bg-white border-neutral-300 text-neutral-900 focus:border-neutral-500 placeholder-neutral-400"
                                         />
                                     </div>
                                 </div>
 
                                 {/* Payment Method Section */}
-                                <div className={`p-6 rounded-2xl border ${darkMode ? 'bg-neutral-950 border-neutral-800' : 'bg-neutral-50 border-neutral-200'}`}>
-                                    <h3 className="text-base font-black mb-4">Payment Method</h3>
+                                <div className="p-6 rounded-2xl border bg-neutral-50 border-neutral-200">
+                                    <h3 className="text-base font-black mb-4 text-neutral-950">Payment Method</h3>
 
                                     <div className="space-y-3 mb-6">
-                                        <label className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition ${paymentMethod === 'card' ? 'border-[#FACC15] bg-yellow-400/5' : darkMode ? 'border-neutral-800 bg-neutral-900' : 'border-neutral-200 bg-white'}`}>
+                                        <label className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition ${paymentMethod === 'card' ? 'border-[#FACC15] bg-yellow-50' : 'border-neutral-200 bg-white'}`}>
                                             <div className="flex items-center gap-3">
                                                 <input type="radio" name="payment" checked={paymentMethod === 'card'} onChange={() => setPaymentMethod('card')} className="accent-[#FACC15]" />
-                                                <span className="font-bold text-sm">Credit / Debit Card</span>
+                                                <span className="font-bold text-sm text-neutral-900">Credit / Debit Card</span>
                                             </div>
-                                            <CreditCard className="w-4 h-4 text-neutral-400" />
+                                            <CreditCard className="w-4 h-4 text-neutral-500" />
                                         </label>
 
-                                        <label className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition ${paymentMethod === 'mpesa' ? 'border-[#FACC15] bg-yellow-400/5' : darkMode ? 'border-neutral-800 bg-neutral-900' : 'border-neutral-200 bg-white'}`}>
+                                        <label className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition ${paymentMethod === 'mpesa' ? 'border-[#FACC15] bg-yellow-50' : 'border-neutral-200 bg-white'}`}>
                                             <div className="flex items-center gap-3">
                                                 <input type="radio" name="payment" checked={paymentMethod === 'mpesa'} onChange={() => setPaymentMethod('mpesa')} className="accent-[#FACC15]" />
-                                                <span className="font-bold text-sm">M-Pesa Express</span>
+                                                <span className="font-bold text-sm text-neutral-900">M-Pesa Express</span>
                                             </div>
-                                            <span className="text-xs font-black bg-emerald-500/10 text-emerald-500 px-2 py-0.5 rounded">Instant</span>
+                                            <span className="text-xs font-black bg-emerald-500/10 text-emerald-600 px-2 py-0.5 rounded">Instant</span>
                                         </label>
                                     </div>
 
                                     {paymentMethod === 'card' && (
                                         <div className="space-y-4">
                                             <div>
-                                                <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-1">Card Number</label>
+                                                <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-1">Card Number</label>
                                                 <input
                                                     type="text" placeholder="4111 2222 3333 4444"
                                                     value={formData.cardNumber}
                                                     onChange={(e) => setFormData({ ...formData, cardNumber: e.target.value })}
-                                                    className={`w-full rounded-xl border px-3.5 py-2.5 text-sm focus:outline-none ${darkMode ? 'bg-neutral-900 border-neutral-700 focus:border-yellow-400' : 'bg-white border-neutral-300 focus:border-neutral-500'}`}
+                                                    className="w-full rounded-xl border px-3.5 py-2.5 text-sm focus:outline-none bg-white border-neutral-300 text-neutral-900 focus:border-neutral-500 placeholder-neutral-400"
                                                 />
                                             </div>
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div>
-                                                    <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-1">Expiry Date</label>
+                                                    <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-1">Expiry Date</label>
                                                     <input
                                                         type="text" placeholder="MM/YY"
                                                         value={formData.expiry}
                                                         onChange={(e) => setFormData({ ...formData, expiry: e.target.value })}
-                                                        className={`w-full rounded-xl border px-3.5 py-2.5 text-sm focus:outline-none ${darkMode ? 'bg-neutral-900 border-neutral-700 focus:border-yellow-400' : 'bg-white border-neutral-300 focus:border-neutral-500'}`}
+                                                        className="w-full rounded-xl border px-3.5 py-2.5 text-sm focus:outline-none bg-white border-neutral-300 text-neutral-900 focus:border-neutral-500 placeholder-neutral-400"
                                                     />
                                                 </div>
                                                 <div>
-                                                    <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-1">CVC / CVV</label>
+                                                    <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-1">CVC / CVV</label>
                                                     <input
                                                         type="password" placeholder="123" maxLength={4}
                                                         value={formData.cvc}
                                                         onChange={(e) => setFormData({ ...formData, cvc: e.target.value })}
-                                                        className={`w-full rounded-xl border px-3.5 py-2.5 text-sm focus:outline-none ${darkMode ? 'bg-neutral-900 border-neutral-700 focus:border-yellow-400' : 'bg-white border-neutral-300 focus:border-neutral-500'}`}
+                                                        className="w-full rounded-xl border px-3.5 py-2.5 text-sm focus:outline-none bg-white border-neutral-300 text-neutral-900 focus:border-neutral-500 placeholder-neutral-400"
                                                     />
                                                 </div>
                                             </div>
@@ -263,26 +263,26 @@ export default function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; on
 
                             {/* Right Column: Order Summary & Totals */}
                             <div className="lg:col-span-5 space-y-6">
-                                <div className={`p-6 rounded-2xl border ${darkMode ? 'bg-neutral-950 border-neutral-800' : 'bg-neutral-50 border-neutral-200'}`}>
-                                    <h3 className="text-base font-black mb-4">Order Summary ({checkoutItems.reduce((acc, item) => acc + item.quantity, 0)})</h3>
+                                <div className="p-6 rounded-2xl border bg-neutral-50 border-neutral-200">
+                                    <h3 className="text-base font-black mb-4 text-neutral-950">Order Summary ({checkoutItems.reduce((acc, item) => acc + item.quantity, 0)})</h3>
 
                                     {/* Items Scroll List with Remove Button */}
                                     <div className="space-y-3 max-h-56 overflow-y-auto pr-1 mb-6">
                                         {checkoutItems.length === 0 ? (
-                                            <p className="text-xs text-neutral-400 text-center py-6">No items in order summary.</p>
+                                            <p className="text-xs text-neutral-500 text-center py-6">No items in order summary.</p>
                                         ) : (
                                             checkoutItems.map((item) => (
-                                                <div key={item.id} className={`flex items-center gap-3 p-3 rounded-xl border ${darkMode ? 'bg-neutral-900 border-neutral-800' : 'bg-white border-neutral-200'}`}>
-                                                    <img src={item.image_url} alt={item.title} className="w-12 h-12 rounded-lg object-cover border border-neutral-700" />
+                                                <div key={item.id} className="flex items-center gap-3 p-3 rounded-xl border bg-white border-neutral-200 shadow-sm">
+                                                    <img src={item.image_url} alt={item.title} className="w-12 h-12 rounded-lg object-cover border border-neutral-200" />
                                                     <div className="flex-1 min-w-0">
-                                                        <h4 className="font-bold text-xs truncate">{item.title}</h4>
-                                                        <p className="text-[11px] text-neutral-400">Qty: {item.quantity}</p>
+                                                        <h4 className="font-bold text-xs truncate text-neutral-950">{item.title}</h4>
+                                                        <p className="text-[11px] text-neutral-500">Qty: {item.quantity}</p>
                                                     </div>
-                                                    <span className="text-xs font-black mr-2">${(item.price * item.quantity).toFixed(2)}</span>
+                                                    <span className="text-xs font-black mr-2 text-neutral-950">${(item.price * item.quantity).toFixed(2)}</span>
                                                     <button
                                                         type="button"
                                                         onClick={() => handleRemoveLocalItem(item.id)}
-                                                        className="text-neutral-400 hover:text-red-500 transition p-1 cursor-pointer"
+                                                        className="text-neutral-400 hover:text-rose-500 transition p-1 cursor-pointer"
                                                         title="Remove from summary"
                                                     >
                                                         <Trash2 className="w-4 h-4" />
@@ -293,27 +293,27 @@ export default function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; on
                                     </div>
 
                                     {/* Calculations */}
-                                    <div className={`space-y-2.5 py-4 border-y text-xs ${darkMode ? 'border-neutral-800 text-neutral-300' : 'border-neutral-200 text-neutral-600'}`}>
+                                    <div className="space-y-2.5 py-4 border-y text-xs border-neutral-200 text-neutral-600">
                                         <div className="flex justify-between">
                                             <span>Subtotal</span>
-                                            <span className="font-bold">${subtotal.toFixed(2)}</span>
+                                            <span className="font-bold text-neutral-900">${subtotal.toFixed(2)}</span>
                                         </div>
                                         <div className="flex justify-between">
                                             <span>Shipping</span>
-                                            <span className="font-bold">{shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}</span>
+                                            <span className="font-bold text-neutral-900">{shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}</span>
                                         </div>
                                         <div className="flex justify-between">
                                             <span>Estimated Tax (8%)</span>
-                                            <span className="font-bold">${tax.toFixed(2)}</span>
+                                            <span className="font-bold text-neutral-900">${tax.toFixed(2)}</span>
                                         </div>
                                     </div>
 
                                     <div className="flex items-center justify-between py-4 text-base font-black">
-                                        <span>Total Amount</span>
-                                        <span className="text-xl text-[#FACC15]">${total.toFixed(2)}</span>
+                                        <span className="text-neutral-950">Total Amount</span>
+                                        <span className="text-xl text-neutral-950">${total.toFixed(2)}</span>
                                     </div>
 
-                                    {/* Updated CTA Button to navigate to full Shopping Cart page */}
+                                    {/* Action Buttons */}
                                     <button
                                         type="button"
                                         onClick={() => {
@@ -328,7 +328,7 @@ export default function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; on
                                     <button
                                         type="submit"
                                         disabled={checkoutItems.length === 0}
-                                        className={`w-full mt-2 py-3 bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white font-bold text-xs uppercase tracking-wider rounded-xl hover:opacity-90 transition shadow-sm flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed`}
+                                        className="w-full mt-2 py-3 bg-neutral-900 text-white font-bold text-xs uppercase tracking-wider rounded-xl hover:bg-neutral-800 transition shadow-sm flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         Quick Checkout <ArrowRight className="w-4 h-4" />
                                     </button>
@@ -336,7 +336,7 @@ export default function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; on
                                     <button
                                         type="button"
                                         onClick={onClose}
-                                        className={`w-full mt-2 py-2 font-semibold text-xs rounded-xl transition flex items-center justify-center gap-2 cursor-pointer ${darkMode ? 'text-neutral-400 hover:text-white' : 'text-neutral-600 hover:text-neutral-950'}`}
+                                        className="w-full mt-2 py-2 font-semibold text-xs rounded-xl transition flex items-center justify-center gap-2 cursor-pointer text-neutral-600 hover:text-neutral-950"
                                     >
                                         <ArrowLeft className="w-3.5 h-3.5" /> Continue Shopping
                                     </button>

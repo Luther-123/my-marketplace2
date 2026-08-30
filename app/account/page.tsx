@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useCart } from '@/context/CartContext'
-import { User, Lock, Bell, ShieldCheck, MapPin, LogOut, Save, Moon, Sun, HelpCircle, CheckCircle, Eye, EyeOff, Edit3, ShoppingCart, Package, Check, ChevronLeft, ChevronRight } from 'lucide-react'
+import { User, Lock, Bell, ShieldCheck, MapPin, LogOut, Save, HelpCircle, CheckCircle, Eye, EyeOff, Edit3, ShoppingCart, Package, Check, ChevronLeft, ChevronRight } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 
 interface Order {
@@ -18,7 +18,7 @@ interface Order {
 
 export default function AccountPage() {
     const router = useRouter()
-    const { darkMode, setDarkMode, cartCount, setIsCartOpen } = useCart()
+    const { cartCount, setIsCartOpen } = useCart()
     const [activeTab, setActiveTab] = useState<'profile' | 'orders' | 'address' | 'password' | 'notifications' | 'verification'>('profile')
     const [loading, setLoading] = useState(false)
     const [successMessage, setSuccessMessage] = useState('')
@@ -66,7 +66,6 @@ export default function AccountPage() {
             const user = session.user
             const userEmail = user.email || ''
 
-            // Pull actual metadata or fallback cleanly to email username without hardcoding names
             setEmail(userEmail)
             setFullName(user.user_metadata?.full_name || user.user_metadata?.name || userEmail.split('@')[0] || '')
             setPhone(user.user_metadata?.phone || '')
@@ -78,13 +77,14 @@ export default function AccountPage() {
 
         fetchUserSession()
     }, [activeTab, router])
+
     const fetchOrders = async (userEmail: string) => {
         setLoadingOrders(true)
         try {
             const { data, error } = await supabase
                 .from('orders')
                 .select('*')
-                .eq('customer_email', userEmail) // Updated to match your actual column name
+                .eq('customer_email', userEmail)
                 .order('created_at', { ascending: false })
 
             if (error) {
@@ -148,43 +148,43 @@ export default function AccountPage() {
         await supabase.auth.signOut()
         localStorage.clear()
 
-        // Check if running on GitHub Pages and route accordingly
         const isProd = process.env.NODE_ENV === 'production'
         const basePath = isProd ? '/my-marketplace2' : ''
 
         router.push(`${basePath}/signin`)
     }
+
     return (
-        <div className={`min-h-screen font-sans transition-colors duration-300 ${darkMode ? 'bg-neutral-950 text-white' : 'bg-neutral-100 text-neutral-900'}`}>
+        <div className="min-h-screen font-sans bg-neutral-100 text-neutral-900 transition-colors duration-300">
 
             {/* Top Navigation Bar */}
-            <header className={`sticky top-0 z-50 backdrop-blur-md border-b transition-colors duration-300 ${darkMode ? 'bg-neutral-950/80 border-neutral-800' : 'bg-white/80 border-neutral-200'}`}>
+            <header className="sticky top-0 z-50 backdrop-blur-md border-b bg-white/80 border-neutral-200 transition-colors duration-300">
                 <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
                     <div className="flex items-center gap-3 cursor-pointer" onClick={() => router.push('/')}>
                         <div className="w-10 h-10 rounded-xl bg-[#FACC15] flex items-center justify-center text-neutral-950 font-black text-xl shadow-sm">
                             P
                         </div>
-                        <span className="text-xl font-black tracking-tight">plugKe</span>
+                        <span className="text-xl font-black tracking-tight text-neutral-950">plugKe</span>
                     </div>
 
                     <div className="flex items-center gap-3">
                         <Link
                             href="/account"
-                            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition ${darkMode ? 'text-neutral-300 hover:bg-neutral-900' : 'text-neutral-600 hover:bg-neutral-100'}`}
+                            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition text-neutral-600 hover:bg-neutral-100"
                         >
                             <User className="w-4 h-4" /> Account
                         </Link>
 
                         <Link
                             href="/help"
-                            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition ${darkMode ? 'text-neutral-300 hover:bg-neutral-900' : 'text-neutral-600 hover:bg-neutral-100'}`}
+                            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition text-neutral-600 hover:bg-neutral-100"
                         >
                             <HelpCircle className="w-4 h-4" /> Help
                         </Link>
 
                         <button
                             onClick={() => setIsCartOpen(true)}
-                            className={`relative flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${darkMode ? 'bg-neutral-900 text-yellow-400 border border-neutral-800 hover:bg-neutral-800' : 'bg-neutral-100 text-neutral-900 hover:bg-neutral-200'}`}
+                            className="relative flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition cursor-pointer bg-neutral-100 text-neutral-900 hover:bg-neutral-200 border border-neutral-200"
                         >
                             <ShoppingCart className="w-4 h-4" />
                             <span>Cart</span>
@@ -194,76 +194,68 @@ export default function AccountPage() {
                                 </span>
                             )}
                         </button>
-
-                        <button
-                            onClick={() => setDarkMode(!darkMode)}
-                            className={`w-9 h-9 rounded-full border flex items-center justify-center transition cursor-pointer ${darkMode ? 'bg-neutral-900 border-neutral-800 text-yellow-400 hover:bg-neutral-800' : 'bg-neutral-50 border-neutral-200 text-neutral-700 hover:bg-neutral-100'}`}
-                            aria-label="Toggle theme"
-                        >
-                            {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-                        </button>
                     </div>
                 </div>
             </header>
 
             {/* Main Account Dashboard Layout */}
             <main className="max-w-7xl mx-auto px-6 py-12">
-                <div className={`rounded-[2.5rem] border overflow-hidden shadow-xl grid grid-cols-1 lg:grid-cols-12 ${darkMode ? 'bg-neutral-900 border-neutral-800' : 'bg-white border-neutral-200'}`}>
+                <div className="rounded-[2.5rem] border overflow-hidden shadow-sm grid grid-cols-1 lg:grid-cols-12 bg-white border-neutral-200">
 
                     {/* Sidebar Navigation */}
-                    <div className={`lg:col-span-4 p-6 md:p-8 border-b lg:border-b-0 lg:border-r flex flex-col justify-between ${darkMode ? 'border-neutral-800 bg-neutral-950/50' : 'border-neutral-200 bg-neutral-50/50'}`}>
+                    <div className="lg:col-span-4 p-6 md:p-8 border-b lg:border-b-0 lg:border-r flex flex-col justify-between border-neutral-200 bg-neutral-50/50">
                         <div className="space-y-6">
                             <div className="flex items-center gap-4">
                                 <div className="w-14 h-14 rounded-2xl bg-[#FACC15] text-neutral-950 font-black text-xl flex items-center justify-center shadow-md">
                                     {fullName ? fullName.charAt(0).toUpperCase() : 'U'}
                                 </div>
                                 <div className="min-w-0">
-                                    <h2 className="font-black text-base truncate">{fullName}</h2>
-                                    <p className="text-xs text-neutral-400 truncate">{email}</p>
+                                    <h2 className="font-black text-base truncate text-neutral-950">{fullName}</h2>
+                                    <p className="text-xs text-neutral-500 truncate">{email}</p>
                                 </div>
                             </div>
 
                             <nav className="space-y-1.5 font-semibold text-xs">
                                 <button
                                     onClick={() => setActiveTab('profile')}
-                                    className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl transition cursor-pointer ${activeTab === 'profile' ? 'bg-[#FACC15] text-neutral-950 font-black shadow-sm' : darkMode ? 'text-neutral-400 hover:text-white hover:bg-neutral-800' : 'text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100'}`}
+                                    className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl transition cursor-pointer ${activeTab === 'profile' ? 'bg-[#FACC15] text-neutral-950 font-black shadow-sm' : 'text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100'}`}
                                 >
                                     <User className="w-4 h-4" /> Profile Settings
                                 </button>
                                 <button
                                     onClick={() => setActiveTab('orders')}
-                                    className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl transition cursor-pointer ${activeTab === 'orders' ? 'bg-[#FACC15] text-neutral-950 font-black shadow-sm' : darkMode ? 'text-neutral-400 hover:text-white hover:bg-neutral-800' : 'text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100'}`}
+                                    className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl transition cursor-pointer ${activeTab === 'orders' ? 'bg-[#FACC15] text-neutral-950 font-black shadow-sm' : 'text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100'}`}
                                 >
                                     <Package className="w-4 h-4" /> Order History
                                 </button>
                                 <button
                                     onClick={() => setActiveTab('address')}
-                                    className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl transition cursor-pointer ${activeTab === 'address' ? 'bg-[#FACC15] text-neutral-950 font-black shadow-sm' : darkMode ? 'text-neutral-400 hover:text-white hover:bg-neutral-800' : 'text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100'}`}
+                                    className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl transition cursor-pointer ${activeTab === 'address' ? 'bg-[#FACC15] text-neutral-950 font-black shadow-sm' : 'text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100'}`}
                                 >
                                     <MapPin className="w-4 h-4" /> Saved Addresses
                                 </button>
                                 <button
                                     onClick={() => setActiveTab('password')}
-                                    className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl transition cursor-pointer ${activeTab === 'password' ? 'bg-[#FACC15] text-neutral-950 font-black shadow-sm' : darkMode ? 'text-neutral-400 hover:text-white hover:bg-neutral-800' : 'text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100'}`}
+                                    className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl transition cursor-pointer ${activeTab === 'password' ? 'bg-[#FACC15] text-neutral-950 font-black shadow-sm' : 'text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100'}`}
                                 >
                                     <Lock className="w-4 h-4" /> Password
                                 </button>
                                 <button
                                     onClick={() => setActiveTab('notifications')}
-                                    className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl transition cursor-pointer ${activeTab === 'notifications' ? 'bg-[#FACC15] text-neutral-950 font-black shadow-sm' : darkMode ? 'text-neutral-400 hover:text-white hover:bg-neutral-800' : 'text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100'}`}
+                                    className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl transition cursor-pointer ${activeTab === 'notifications' ? 'bg-[#FACC15] text-neutral-950 font-black shadow-sm' : 'text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100'}`}
                                 >
                                     <Bell className="w-4 h-4" /> Notifications
                                 </button>
                                 <button
                                     onClick={() => setActiveTab('verification')}
-                                    className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl transition cursor-pointer ${activeTab === 'verification' ? 'bg-[#FACC15] text-neutral-950 font-black shadow-sm' : darkMode ? 'text-neutral-400 hover:text-white hover:bg-neutral-800' : 'text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100'}`}
+                                    className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl transition cursor-pointer ${activeTab === 'verification' ? 'bg-[#FACC15] text-neutral-950 font-black shadow-sm' : 'text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100'}`}
                                 >
                                     <ShieldCheck className="w-4 h-4" /> Verification
                                 </button>
                             </nav>
                         </div>
 
-                        <div className="pt-6 mt-6 border-t border-neutral-200 dark:border-neutral-800">
+                        <div className="pt-6 mt-6 border-t border-neutral-200">
                             <button
                                 onClick={handleLogout}
                                 className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-rose-500 hover:bg-rose-500/10 font-bold text-xs transition cursor-pointer"
@@ -276,29 +268,29 @@ export default function AccountPage() {
                     {/* Main Content Area */}
                     <div className="lg:col-span-8 p-6 md:p-10">
                         {successMessage && (
-                            <div className="mb-6 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-xs font-bold flex items-center gap-2">
+                            <div className="mb-6 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 text-xs font-bold flex items-center gap-2">
                                 <CheckCircle className="w-4 h-4 shrink-0" /> {successMessage}
                             </div>
                         )}
 
                         {activeTab === 'profile' && (
                             <div>
-                                <div className="mb-8 pb-4 border-b border-neutral-200 dark:border-neutral-800 flex items-center justify-between">
+                                <div className="mb-8 pb-4 border-b border-neutral-200 flex items-center justify-between">
                                     <div>
-                                        <h1 className="text-2xl font-black tracking-tight">Profile Settings</h1>
-                                        <p className="text-xs text-neutral-400 mt-1">Manage your account preferences and secure details.</p>
+                                        <h1 className="text-2xl font-black tracking-tight text-neutral-950">Profile Settings</h1>
+                                        <p className="text-xs text-neutral-500 mt-1">Manage your account preferences and secure details.</p>
                                     </div>
                                     {!isEditingProfile && (
                                         <button
                                             onClick={() => setIsEditingProfile(true)}
-                                            className={`px-4 py-2 rounded-xl text-xs font-bold border transition flex items-center gap-2 cursor-pointer ${darkMode ? 'border-neutral-700 hover:bg-neutral-800' : 'border-neutral-300 hover:bg-neutral-100'}`}
+                                            className="px-4 py-2 rounded-xl text-xs font-bold border transition flex items-center gap-2 cursor-pointer border-neutral-300 hover:bg-neutral-100 text-neutral-700"
                                         >
                                             <Edit3 className="w-3.5 h-3.5" /> Edit Profile
                                         </button>
                                     )}
                                 </div>
 
-                                <div className="flex items-center gap-6 mb-8 pb-6 border-b border-neutral-200 dark:border-neutral-800">
+                                <div className="flex items-center gap-6 mb-8 pb-6 border-b border-neutral-200">
                                     <div className="relative">
                                         <div className="w-20 h-20 rounded-full bg-[#FACC15] text-neutral-950 font-black text-2xl flex items-center justify-center shadow-md">
                                             {fullName ? fullName.charAt(0).toUpperCase() : 'U'}
@@ -309,37 +301,37 @@ export default function AccountPage() {
                                             type="button"
                                             disabled={!isEditingProfile}
                                             onClick={() => alert('Profile photo upload triggered!')}
-                                            className={`px-5 py-2.5 font-black text-xs uppercase tracking-wider rounded-xl transition shadow-sm mb-1.5 ${isEditingProfile ? 'bg-[#FACC15] text-neutral-950 hover:bg-yellow-400 cursor-pointer' : 'bg-neutral-200 dark:bg-neutral-800 text-neutral-400 cursor-not-allowed'}`}
+                                            className={`px-5 py-2.5 font-black text-xs uppercase tracking-wider rounded-xl transition shadow-sm mb-1.5 ${isEditingProfile ? 'bg-[#FACC15] text-neutral-950 hover:bg-yellow-400 cursor-pointer' : 'bg-neutral-200 text-neutral-400 cursor-not-allowed'}`}
                                         >
                                             Upload New
                                         </button>
-                                        <p className="text-[11px] text-neutral-400">PNG, JPG or WEBP. Max size 2MB.</p>
+                                        <p className="text-[11px] text-neutral-500">PNG, JPG or WEBP. Max size 2MB.</p>
                                     </div>
                                 </div>
 
                                 <form onSubmit={handleSaveProfile} className="space-y-6">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div>
-                                            <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-2">Full Name</label>
+                                            <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-2">Full Name</label>
                                             <input
                                                 type="text" value={fullName} disabled={!isEditingProfile} onChange={(e) => setFullName(e.target.value)}
-                                                className={`w-full rounded-2xl border px-4 py-3 text-sm focus:outline-none transition ${!isEditingProfile ? darkMode ? 'bg-neutral-900/30 border-neutral-800/80 text-neutral-300 cursor-default' : 'bg-neutral-50/80 border-neutral-200 text-neutral-700 cursor-default' : darkMode ? 'bg-neutral-950 border-neutral-700 text-white focus:border-[#FACC15]' : 'bg-white border-neutral-400 text-neutral-900 shadow-sm'}`}
+                                                className={`w-full rounded-2xl border px-4 py-3 text-sm focus:outline-none transition ${!isEditingProfile ? 'bg-neutral-50 border-neutral-200 text-neutral-700 cursor-default' : 'bg-white border-neutral-400 text-neutral-900 shadow-sm'}`}
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-2">Email Address</label>
+                                            <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-2">Email Address</label>
                                             <input
                                                 type="email" value={email} disabled={!isEditingProfile} onChange={(e) => setEmail(e.target.value)}
-                                                className={`w-full rounded-2xl border px-4 py-3 text-sm focus:outline-none transition ${!isEditingProfile ? darkMode ? 'bg-neutral-900/30 border-neutral-800/80 text-neutral-300 cursor-default' : 'bg-neutral-50/80 border-neutral-200 text-neutral-700 cursor-default' : darkMode ? 'bg-neutral-950 border-neutral-700 text-white focus:border-[#FACC15]' : 'bg-white border-neutral-400 text-neutral-900 shadow-sm'}`}
+                                                className={`w-full rounded-2xl border px-4 py-3 text-sm focus:outline-none transition ${!isEditingProfile ? 'bg-neutral-50 border-neutral-200 text-neutral-700 cursor-default' : 'bg-white border-neutral-400 text-neutral-900 shadow-sm'}`}
                                             />
                                         </div>
                                     </div>
 
                                     <div>
-                                        <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-2">Phone Number</label>
+                                        <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-2">Phone Number</label>
                                         <input
                                             type="tel" value={phone} disabled={!isEditingProfile} onChange={(e) => setPhone(e.target.value)}
-                                            className={`w-full rounded-2xl border px-4 py-3 text-sm focus:outline-none transition ${!isEditingProfile ? darkMode ? 'bg-neutral-900/30 border-neutral-800/80 text-neutral-300 cursor-default' : 'bg-neutral-50/80 border-neutral-200 text-neutral-700 cursor-default' : darkMode ? 'bg-neutral-950 border-neutral-700 text-white focus:border-[#FACC15]' : 'bg-white border-neutral-400 text-neutral-900 shadow-sm'}`}
+                                            className={`w-full rounded-2xl border px-4 py-3 text-sm focus:outline-none transition ${!isEditingProfile ? 'bg-neutral-50 border-neutral-200 text-neutral-700 cursor-default' : 'bg-white border-neutral-400 text-neutral-900 shadow-sm'}`}
                                         />
                                     </div>
 
@@ -354,7 +346,7 @@ export default function AccountPage() {
                                             <button
                                                 type="button"
                                                 onClick={() => setIsEditingProfile(false)}
-                                                className={`px-6 py-3.5 rounded-2xl font-bold text-xs border transition cursor-pointer ${darkMode ? 'border-neutral-700 hover:bg-neutral-800' : 'border-neutral-300 hover:bg-neutral-100'}`}
+                                                className="px-6 py-3.5 rounded-2xl font-bold text-xs border transition cursor-pointer border-neutral-300 hover:bg-neutral-100 text-neutral-700"
                                             >
                                                 Cancel
                                             </button>
@@ -366,21 +358,21 @@ export default function AccountPage() {
 
                         {activeTab === 'orders' && (
                             <div>
-                                <div className="mb-8 pb-4 border-b border-neutral-200 dark:border-neutral-800">
-                                    <h1 className="text-2xl font-black tracking-tight">Order History</h1>
-                                    <p className="text-xs text-neutral-400 mt-1">Track your previous purchases and delivery status.</p>
+                                <div className="mb-8 pb-4 border-b border-neutral-200">
+                                    <h1 className="text-2xl font-black tracking-tight text-neutral-950">Order History</h1>
+                                    <p className="text-xs text-neutral-500 mt-1">Track your previous purchases and delivery status.</p>
                                 </div>
 
                                 {loadingOrders ? (
-                                    <div className="py-12 text-center text-xs text-neutral-400">Loading your orders...</div>
+                                    <div className="py-12 text-center text-xs text-neutral-500">Loading your orders...</div>
                                 ) : orders.length === 0 ? (
-                                    <div className={`p-12 rounded-2xl border text-center ${darkMode ? 'bg-neutral-950 border-neutral-800' : 'bg-neutral-50 border-neutral-200'}`}>
+                                    <div className="p-12 rounded-2xl border text-center bg-neutral-50 border-neutral-200">
                                         <Package className="w-10 h-10 text-neutral-400 mx-auto mb-3" />
-                                        <h3 className="font-bold text-sm mb-1">No orders placed yet</h3>
-                                        <p className="text-xs text-neutral-400 mb-4">When you checkout items, they will appear right here.</p>
+                                        <h3 className="font-bold text-sm mb-1 text-neutral-950">No orders placed yet</h3>
+                                        <p className="text-xs text-neutral-500 mb-4">When you checkout items, they will appear right here.</p>
                                         <button
                                             onClick={() => router.push('/')}
-                                            className="px-6 py-2.5 bg-[#FACC15] text-neutral-950 font-bold text-xs uppercase tracking-wider rounded-xl hover:bg-yellow-400 transition cursor-pointer"
+                                            className="px-6 py-2.5 bg-[#FACC15] text-neutral-950 font-bold text-xs uppercase tracking-wider rounded-xl hover:bg-yellow-400 transition cursor-pointer shadow-sm"
                                         >
                                             Start Shopping
                                         </button>
@@ -389,16 +381,16 @@ export default function AccountPage() {
                                     <div className="space-y-6">
                                         <div className="space-y-4">
                                             {currentOrders.map((order) => (
-                                                <div key={order.id} className={`p-6 rounded-2xl border space-y-4 ${darkMode ? 'bg-neutral-950 border-neutral-800' : 'bg-neutral-50 border-neutral-200'}`}>
-                                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-neutral-200 dark:border-neutral-800 text-xs">
+                                                <div key={order.id} className="p-6 rounded-2xl border space-y-4 bg-neutral-50 border-neutral-200">
+                                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-neutral-200 text-xs">
                                                         <div>
-                                                            <span className="font-bold text-neutral-400">Order ID: </span>
-                                                            <span className="font-mono font-bold">#{order.id.slice(0, 8)}</span>
+                                                            <span className="font-bold text-neutral-500">Order ID: </span>
+                                                            <span className="font-mono font-bold text-neutral-950">#{order.id.slice(0, 8)}</span>
                                                         </div>
-                                                        <div className="text-neutral-400">
+                                                        <div className="text-neutral-500">
                                                             {new Date(order.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                                                         </div>
-                                                        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 font-bold w-fit">
+                                                        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 font-bold w-fit">
                                                             <Check className="w-3.5 h-3.5" /> {order.status || 'pending'}
                                                         </div>
                                                     </div>
@@ -406,22 +398,22 @@ export default function AccountPage() {
                                                     <div className="space-y-2">
                                                         {order.items?.map((item, idx) => (
                                                             <div key={idx} className="flex justify-between items-center text-xs">
-                                                                <span className="font-medium">{item.title} <span className="text-neutral-400">x{item.quantity}</span></span>
-                                                                <span className="font-bold">${(item.price * item.quantity).toFixed(2)}</span>
+                                                                <span className="font-medium text-neutral-900">{item.title} <span className="text-neutral-500">x{item.quantity}</span></span>
+                                                                <span className="font-bold text-neutral-950">${(item.price * item.quantity).toFixed(2)}</span>
                                                             </div>
                                                         ))}
                                                     </div>
 
-                                                    <div className="pt-3 border-t border-neutral-200 dark:border-neutral-800 flex justify-between items-center text-sm font-black">
-                                                        <span>Total Paid</span>
-                                                        <span className="text-[#FACC15]">${order.total_amount?.toFixed(2)}</span>
+                                                    <div className="pt-3 border-t border-neutral-200 flex justify-between items-center text-sm font-black">
+                                                        <span className="text-neutral-950">Total Paid</span>
+                                                        <span className="text-neutral-950">${order.total_amount?.toFixed(2)}</span>
                                                     </div>
                                                 </div>
                                             ))}
                                         </div>
 
                                         {/* Pagination Controls */}
-                                        <div className={`flex items-center justify-between pt-4 border-t text-xs font-semibold ${darkMode ? 'border-neutral-800 text-neutral-400' : 'border-neutral-200 text-neutral-600'}`}>
+                                        <div className="flex items-center justify-between pt-4 border-t text-xs font-semibold border-neutral-200 text-neutral-600">
                                             <div>
                                                 Showing {startIndex + 1} to {Math.min(startIndex + rowsPerPage, orders.length)} of {orders.length} records
                                             </div>
@@ -431,14 +423,14 @@ export default function AccountPage() {
                                                     <button
                                                         onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                                                         disabled={currentPage === 1}
-                                                        className={`p-2 rounded-xl border transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed ${darkMode ? 'border-neutral-800 hover:bg-neutral-800' : 'border-neutral-300 hover:bg-neutral-100'}`}
+                                                        className="p-2 rounded-xl border transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed border-neutral-300 hover:bg-neutral-100 text-neutral-700"
                                                     >
                                                         <ChevronLeft className="w-4 h-4" />
                                                     </button>
                                                     <button
                                                         onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                                                         disabled={currentPage === totalPages}
-                                                        className={`p-2 rounded-xl border transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed ${darkMode ? 'border-neutral-800 hover:bg-neutral-800' : 'border-neutral-300 hover:bg-neutral-100'}`}
+                                                        className="p-2 rounded-xl border transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed border-neutral-300 hover:bg-neutral-100 text-neutral-700"
                                                     >
                                                         <ChevronRight className="w-4 h-4" />
                                                     </button>
@@ -452,15 +444,15 @@ export default function AccountPage() {
 
                         {activeTab === 'address' && (
                             <div>
-                                <div className="mb-8 pb-4 border-b border-neutral-200 dark:border-neutral-800 flex items-center justify-between">
+                                <div className="mb-8 pb-4 border-b border-neutral-200 flex items-center justify-between">
                                     <div>
-                                        <h1 className="text-2xl font-black tracking-tight">Saved Addresses</h1>
-                                        <p className="text-xs text-neutral-400 mt-1">Manage your default shipping and delivery destinations.</p>
+                                        <h1 className="text-2xl font-black tracking-tight text-neutral-950">Saved Addresses</h1>
+                                        <p className="text-xs text-neutral-500 mt-1">Manage your default shipping and delivery destinations.</p>
                                     </div>
                                     {!isEditingAddress && (
                                         <button
                                             onClick={() => setIsEditingAddress(true)}
-                                            className={`px-4 py-2 rounded-xl text-xs font-bold border transition flex items-center gap-2 cursor-pointer ${darkMode ? 'border-neutral-700 hover:bg-neutral-800' : 'border-neutral-300 hover:bg-neutral-100'}`}
+                                            className="px-4 py-2 rounded-xl text-xs font-bold border transition flex items-center gap-2 cursor-pointer border-neutral-300 hover:bg-neutral-100 text-neutral-700"
                                         >
                                             <Edit3 className="w-3.5 h-3.5" /> Edit Address
                                         </button>
@@ -469,37 +461,37 @@ export default function AccountPage() {
 
                                 <form onSubmit={handleSaveAddress} className="space-y-6">
                                     <div>
-                                        <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-2">Street Address / Landmark / Building</label>
+                                        <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-2">Street Address / Landmark / Building</label>
                                         <input
                                             type="text" required disabled={!isEditingAddress} placeholder="e.g., Enter your street address, building, or nearest landmark..."
                                             value={addressData.street} onChange={(e) => setAddressData({ ...addressData, street: e.target.value })}
-                                            className={`w-full rounded-2xl border px-4 py-3 text-sm focus:outline-none transition ${!isEditingAddress ? darkMode ? 'bg-neutral-900/30 border-neutral-800/80 text-neutral-300 cursor-default' : 'bg-neutral-50/80 border-neutral-200 text-neutral-700 cursor-default' : darkMode ? 'bg-neutral-950 border-neutral-700 text-white focus:border-[#FACC15]' : 'bg-white border-neutral-400 text-neutral-900 shadow-sm'}`}
+                                            className={`w-full rounded-2xl border px-4 py-3 text-sm focus:outline-none transition ${!isEditingAddress ? 'bg-neutral-50 border-neutral-200 text-neutral-700 cursor-default' : 'bg-white border-neutral-400 text-neutral-900 shadow-sm'}`}
                                         />
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                         <div>
-                                            <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-2">City / County</label>
+                                            <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-2">City / County</label>
                                             <input
                                                 type="text" required disabled={!isEditingAddress} placeholder="e.g., Nairobi, Kajiado..."
                                                 value={addressData.city} onChange={(e) => setAddressData({ ...addressData, city: e.target.value })}
-                                                className={`w-full rounded-2xl border px-4 py-3 text-sm focus:outline-none transition ${!isEditingAddress ? darkMode ? 'bg-neutral-900/30 border-neutral-800/80 text-neutral-300 cursor-default' : 'bg-neutral-50/80 border-neutral-200 text-neutral-700 cursor-default' : darkMode ? 'bg-neutral-950 border-neutral-700 text-white focus:border-[#FACC15]' : 'bg-white border-neutral-400 text-neutral-900 shadow-sm'}`}
+                                                className={`w-full rounded-2xl border px-4 py-3 text-sm focus:outline-none transition ${!isEditingAddress ? 'bg-neutral-50 border-neutral-200 text-neutral-700 cursor-default' : 'bg-white border-neutral-400 text-neutral-900 shadow-sm'}`}
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-2">Postal Code</label>
+                                            <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-2">Postal Code</label>
                                             <input
                                                 type="text" disabled={!isEditingAddress} placeholder="e.g., 00100"
                                                 value={addressData.postalCode} onChange={(e) => setAddressData({ ...addressData, postalCode: e.target.value })}
-                                                className={`w-full rounded-2xl border px-4 py-3 text-sm focus:outline-none transition ${!isEditingAddress ? darkMode ? 'bg-neutral-900/30 border-neutral-800/80 text-neutral-300 cursor-default' : 'bg-neutral-50/80 border-neutral-200 text-neutral-700 cursor-default' : darkMode ? 'bg-neutral-950 border-neutral-700 text-white focus:border-[#FACC15]' : 'bg-white border-neutral-400 text-neutral-900 shadow-sm'}`}
+                                                className={`w-full rounded-2xl border px-4 py-3 text-sm focus:outline-none transition ${!isEditingAddress ? 'bg-neutral-50 border-neutral-200 text-neutral-700 cursor-default' : 'bg-white border-neutral-400 text-neutral-900 shadow-sm'}`}
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-2">Country</label>
+                                            <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-2">Country</label>
                                             <input
                                                 type="text" required disabled={!isEditingAddress} placeholder="Kenya"
                                                 value={addressData.country} onChange={(e) => setAddressData({ ...addressData, country: e.target.value })}
-                                                className={`w-full rounded-2xl border px-4 py-3 text-sm focus:outline-none transition ${!isEditingAddress ? darkMode ? 'bg-neutral-900/30 border-neutral-800/80 text-neutral-300 cursor-default' : 'bg-neutral-50/80 border-neutral-200 text-neutral-700 cursor-default' : darkMode ? 'bg-neutral-950 border-neutral-700 text-white focus:border-[#FACC15]' : 'bg-white border-neutral-400 text-neutral-900 shadow-sm'}`}
+                                                className={`w-full rounded-2xl border px-4 py-3 text-sm focus:outline-none transition ${!isEditingAddress ? 'bg-neutral-50 border-neutral-200 text-neutral-700 cursor-default' : 'bg-white border-neutral-400 text-neutral-900 shadow-sm'}`}
                                             />
                                         </div>
                                     </div>
@@ -515,7 +507,7 @@ export default function AccountPage() {
                                             <button
                                                 type="button"
                                                 onClick={() => setIsEditingAddress(false)}
-                                                className={`px-6 py-3.5 rounded-2xl font-bold text-xs border transition cursor-pointer ${darkMode ? 'border-neutral-700 hover:bg-neutral-800' : 'border-neutral-300 hover:bg-neutral-100'}`}
+                                                className="px-6 py-3.5 rounded-2xl font-bold text-xs border transition cursor-pointer border-neutral-300 hover:bg-neutral-100 text-neutral-700"
                                             >
                                                 Cancel
                                             </button>
@@ -527,24 +519,24 @@ export default function AccountPage() {
 
                         {activeTab === 'password' && (
                             <div>
-                                <div className="mb-8 pb-4 border-b border-neutral-200 dark:border-neutral-800">
-                                    <h1 className="text-2xl font-black tracking-tight">Security & Password</h1>
-                                    <p className="text-xs text-neutral-400 mt-1">Update your password to keep your account secure.</p>
+                                <div className="mb-8 pb-4 border-b border-neutral-200">
+                                    <h1 className="text-2xl font-black tracking-tight text-neutral-950">Security & Password</h1>
+                                    <p className="text-xs text-neutral-500 mt-1">Update your password to keep your account secure.</p>
                                 </div>
 
                                 <form onSubmit={handleUpdatePassword} className="space-y-6 max-w-lg">
                                     <div className="relative">
-                                        <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-2">Current Password</label>
+                                        <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-2">Current Password</label>
                                         <div className="relative">
                                             <input
                                                 type={showCurrent ? 'text' : 'password'} required placeholder="••••••••"
                                                 value={passwords.current} onChange={(e) => setPasswords({ ...passwords, current: e.target.value })}
-                                                className={`w-full rounded-2xl border px-4 py-3 pr-12 text-sm focus:outline-none transition ${darkMode ? 'bg-neutral-950 border-neutral-700 text-white focus:border-[#FACC15]' : 'bg-white border-neutral-400 text-neutral-900 shadow-sm'}`}
+                                                className="w-full rounded-2xl border px-4 py-3 pr-12 text-sm focus:outline-none transition bg-white border-neutral-400 text-neutral-900 shadow-sm"
                                             />
                                             <button
                                                 type="button"
                                                 onClick={() => setShowCurrent(!showCurrent)}
-                                                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 dark:hover:text-white transition cursor-pointer"
+                                                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 transition cursor-pointer"
                                                 aria-label="Toggle password visibility"
                                             >
                                                 {showCurrent ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -553,17 +545,17 @@ export default function AccountPage() {
                                     </div>
 
                                     <div className="relative">
-                                        <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-2">New Password</label>
+                                        <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-2">New Password</label>
                                         <div className="relative">
                                             <input
                                                 type={showNew ? 'text' : 'password'} required placeholder="••••••••"
                                                 value={passwords.newPass} onChange={(e) => setPasswords({ ...passwords, newPass: e.target.value })}
-                                                className={`w-full rounded-2xl border px-4 py-3 pr-12 text-sm focus:outline-none transition ${darkMode ? 'bg-neutral-950 border-neutral-700 text-white focus:border-[#FACC15]' : 'bg-white border-neutral-400 text-neutral-900 shadow-sm'}`}
+                                                className="w-full rounded-2xl border px-4 py-3 pr-12 text-sm focus:outline-none transition bg-white border-neutral-400 text-neutral-900 shadow-sm"
                                             />
                                             <button
                                                 type="button"
                                                 onClick={() => setShowNew(!showNew)}
-                                                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 dark:hover:text-white transition cursor-pointer"
+                                                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 transition cursor-pointer"
                                                 aria-label="Toggle password visibility"
                                             >
                                                 {showNew ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -572,17 +564,17 @@ export default function AccountPage() {
                                     </div>
 
                                     <div className="relative">
-                                        <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-2">Confirm New Password</label>
+                                        <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-2">Confirm New Password</label>
                                         <div className="relative">
                                             <input
                                                 type={showConfirm ? 'text' : 'password'} required placeholder="••••••••"
                                                 value={passwords.confirm} onChange={(e) => setPasswords({ ...passwords, confirm: e.target.value })}
-                                                className={`w-full rounded-2xl border px-4 py-3 pr-12 text-sm focus:outline-none transition ${darkMode ? 'bg-neutral-950 border-neutral-700 text-white focus:border-[#FACC15]' : 'bg-white border-neutral-400 text-neutral-900 shadow-sm'}`}
+                                                className="w-full rounded-2xl border px-4 py-3 pr-12 text-sm focus:outline-none transition bg-white border-neutral-400 text-neutral-900 shadow-sm"
                                             />
                                             <button
                                                 type="button"
                                                 onClick={() => setShowConfirm(!showConfirm)}
-                                                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 dark:hover:text-white transition cursor-pointer"
+                                                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 transition cursor-pointer"
                                                 aria-label="Toggle password visibility"
                                             >
                                                 {showConfirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -602,9 +594,9 @@ export default function AccountPage() {
 
                         {activeTab === 'notifications' && (
                             <div>
-                                <div className="mb-8 pb-4 border-b border-neutral-200 dark:border-neutral-800">
-                                    <h1 className="text-2xl font-black tracking-tight">Notification Preferences</h1>
-                                    <p className="text-xs text-neutral-400 mt-1">Choose what updates you want to receive.</p>
+                                <div className="mb-8 pb-4 border-b border-neutral-200">
+                                    <h1 className="text-2xl font-black tracking-tight text-neutral-950">Notification Preferences</h1>
+                                    <p className="text-xs text-neutral-500 mt-1">Choose what updates you want to receive.</p>
                                 </div>
 
                                 <div className="space-y-4 max-w-lg">
@@ -613,10 +605,10 @@ export default function AccountPage() {
                                         { key: 'orderUpdates', title: 'Order & Shipping Updates', desc: 'Get live SMS and email notifications regarding your package.' },
                                         { key: 'promoSMS', title: 'Promotional Offers & Discounts', desc: 'Receive exclusive discount codes and clearance alerts.' },
                                     ].map((item) => (
-                                        <label key={item.key} className={`flex items-start justify-between p-4 rounded-2xl border cursor-pointer transition ${darkMode ? 'bg-neutral-950 border-neutral-800' : 'bg-neutral-50 border-neutral-200'}`}>
+                                        <label key={item.key} className="flex items-start justify-between p-4 rounded-2xl border cursor-pointer transition bg-neutral-50 border-neutral-200">
                                             <div>
-                                                <h4 className="font-bold text-sm mb-0.5">{item.title}</h4>
-                                                <p className="text-xs text-neutral-400">{item.desc}</p>
+                                                <h4 className="font-bold text-sm mb-0.5 text-neutral-950">{item.title}</h4>
+                                                <p className="text-xs text-neutral-500">{item.desc}</p>
                                             </div>
                                             <input
                                                 type="checkbox"
@@ -642,16 +634,16 @@ export default function AccountPage() {
 
                         {activeTab === 'verification' && (
                             <div>
-                                <div className="mb-8 pb-4 border-b border-neutral-200 dark:border-neutral-800">
-                                    <h1 className="text-2xl font-black tracking-tight">Account Verification</h1>
-                                    <p className="text-xs text-neutral-400 mt-1">Verify your identity for secure order fulfillment in Kenya.</p>
+                                <div className="mb-8 pb-4 border-b border-neutral-200">
+                                    <h1 className="text-2xl font-black tracking-tight text-neutral-950">Account Verification</h1>
+                                    <p className="text-xs text-neutral-500 mt-1">Verify your identity for secure order fulfillment in Kenya.</p>
                                 </div>
 
-                                <div className={`p-6 rounded-2xl border space-y-4 max-w-lg ${darkMode ? 'bg-neutral-950 border-neutral-800' : 'bg-neutral-50 border-neutral-200'}`}>
-                                    <div className="flex items-center gap-3 text-emerald-500 font-bold text-sm">
+                                <div className="p-6 rounded-2xl border space-y-4 max-w-lg bg-neutral-50 border-neutral-200">
+                                    <div className="flex items-center gap-3 text-emerald-600 font-bold text-sm">
                                         <ShieldCheck className="w-6 h-6" /> Phone Number Verified (+254 743 818 278)
                                     </div>
-                                    <p className="text-xs text-neutral-400 leading-relaxed">Your account is fully verified via M-Pesa secure token checks. You are cleared for express order fulfillment nationwide.</p>
+                                    <p className="text-xs text-neutral-600 leading-relaxed">Your account is fully verified via M-Pesa secure token checks. You are cleared for express order fulfillment nationwide.</p>
                                     <button
                                         onClick={() => alert('Identity verification documentation submitted!')}
                                         className="px-6 py-3 bg-[#FACC15] text-neutral-950 font-black text-xs uppercase tracking-wider rounded-xl hover:bg-yellow-400 transition shadow-sm cursor-pointer"
@@ -668,40 +660,40 @@ export default function AccountPage() {
             </main>
 
             {/* Footer */}
-            <footer className={`border-t mt-20 transition-colors duration-300 ${darkMode ? 'bg-neutral-950 border-neutral-800 text-neutral-400' : 'bg-white border-neutral-200 text-neutral-600'}`}>
+            <footer className="border-t mt-20 transition-colors duration-300 bg-white border-neutral-200 text-neutral-600">
                 <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-4 gap-8 text-xs">
                     <div>
                         <div className="flex items-center gap-3 mb-4">
                             <div className="w-8 h-8 rounded-xl bg-[#FACC15] flex items-center justify-center text-neutral-950 font-black text-lg">
                                 P
                             </div>
-                            <span className="text-lg font-black tracking-tight text-neutral-950 dark:text-white">plugKe</span>
+                            <span className="text-lg font-black tracking-tight text-neutral-950">plugKe</span>
                         </div>
-                        <p className="text-[11px] leading-relaxed">Your ultimate destination for high-end tech, stylish apparel, and minimalist home furniture in Kenya.</p>
+                        <p className="text-[11px] leading-relaxed text-neutral-500">Your ultimate destination for high-end tech, stylish apparel, and minimalist home furniture in Kenya.</p>
                     </div>
 
                     <div>
-                        <h4 className="font-black text-sm text-neutral-950 dark:text-white mb-4 uppercase tracking-wider">Company</h4>
-                        <ul className="space-y-2.5 font-semibold">
-                            <li><Link href="/" className="hover:text-[#FACC15] transition">Home Catalog</Link></li>
-                            <li><Link href="/cart" className="hover:text-[#FACC15] transition">Shopping Cart</Link></li>
-                            <li><Link href="/account" className="hover:text-[#FACC15] transition">Account Dashboard</Link></li>
+                        <h4 className="font-black text-sm text-neutral-950 mb-4 uppercase tracking-wider">Company</h4>
+                        <ul className="space-y-2.5 font-semibold text-neutral-600">
+                            <li><Link href="/" className="hover:text-neutral-950 transition">Home Catalog</Link></li>
+                            <li><Link href="/cart" className="hover:text-neutral-950 transition">Shopping Cart</Link></li>
+                            <li><Link href="/account" className="hover:text-neutral-950 transition">Account Dashboard</Link></li>
                         </ul>
                     </div>
 
                     <div>
-                        <h4 className="font-black text-sm text-neutral-950 dark:text-white mb-4 uppercase tracking-wider">Customer Services</h4>
-                        <ul className="space-y-2.5 font-semibold">
-                            <li><Link href="/account" className="hover:text-neutral-950 dark:hover:text-white transition">Profile Settings</Link></li>
-                            <li><Link href="/help" className="hover:text-neutral-950 dark:hover:text-white transition">Help Center</Link></li>
+                        <h4 className="font-black text-sm text-neutral-950 mb-4 uppercase tracking-wider">Customer Services</h4>
+                        <ul className="space-y-2.5 font-semibold text-neutral-600">
+                            <li><Link href="/account" className="hover:text-neutral-950 transition">Profile Settings</Link></li>
+                            <li><Link href="/help" className="hover:text-neutral-950 transition">Help Center</Link></li>
                         </ul>
                     </div>
 
                     <div>
-                        <h4 className="font-black text-sm text-neutral-950 dark:text-white mb-4 uppercase tracking-wider">Contact Info</h4>
-                        <p className="font-semibold mb-2">+254 712 345 678</p>
-                        <p className="font-semibold mb-2">support@plugke.co.ke</p>
-                        <p className="text-[11px]">Nairobi, Kenya</p>
+                        <h4 className="font-black text-sm text-neutral-950 mb-4 uppercase tracking-wider">Contact Info</h4>
+                        <p className="font-semibold mb-2 text-neutral-600">+254 712 345 678</p>
+                        <p className="font-semibold mb-2 text-neutral-600">support@plugke.co.ke</p>
+                        <p className="text-[11px] text-neutral-500">Nairobi, Kenya</p>
                     </div>
                 </div>
             </footer>
