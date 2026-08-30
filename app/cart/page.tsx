@@ -8,7 +8,7 @@ import { supabase } from '@/lib/supabase'
 
 export default function CartPage() {
     const router = useRouter()
-    const { cart, updateQuantity, removeFromCart, cartCount, setIsCartOpen } = useCart()
+    const { cart, updateQuantity, removeFromCart, cartCount, setIsCartOpen, clearCart } = useCart()
 
     const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0)
     const shipping = subtotal > 500 || subtotal === 0 ? 0 : 15.00
@@ -38,6 +38,7 @@ export default function CartPage() {
             console.error('Failed to save order:', error.message)
             alert('Checkout failed. Please try again.')
         } else {
+            clearCart() // This clears the cart state and resets the counter badge to 0
             alert('Order placed successfully!')
             router.push('/account')
         }
@@ -171,7 +172,7 @@ export default function CartPage() {
                                 </div>
                             </div>
                             <div className="flex items-center justify-between py-2 text-base font-black">
-                                <span>Total Amount</span>
+                                <span className="text-white">Total Amount</span>
                                 <span className="text-xl text-[#FACC15]">${total.toFixed(2)}</span>
                             </div>
                             <button
