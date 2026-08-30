@@ -268,7 +268,11 @@ export default function ProductClient({ productId }: { productId: string }) {
                         <h2 className="text-2xl font-black tracking-tight">Related Results</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                             {relatedProducts.map((item) => (
-                                <div key={item.id} onClick={() => router.push(`/product/${item.id}`)} className={`group rounded-3xl border p-4 shadow-sm hover:shadow-md transition cursor-pointer flex flex-col justify-between ${darkMode ? 'bg-neutral-900 border-neutral-800 text-white' : 'bg-white border-neutral-200 text-neutral-900'}`}>
+                                <div
+                                    key={item.id}
+                                    onClick={() => router.push(`/products/${item.id}`)}
+                                    className={`group rounded-3xl border p-4 shadow-sm hover:shadow-md transition cursor-pointer flex flex-col justify-between ${darkMode ? 'bg-neutral-900 border-neutral-800 text-white' : 'bg-white border-neutral-200 text-neutral-900'}`}
+                                >
                                     <div className="w-full h-48 rounded-2xl overflow-hidden mb-4 bg-neutral-100 dark:bg-neutral-950">
                                         <img src={item.image_url} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
                                     </div>
