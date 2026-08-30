@@ -168,7 +168,7 @@ export default function ProductClient({ productId }: { productId: string }) {
                                 <span className="text-xs font-bold text-neutral-500">(4.9 / 128 Reviews)</span>
                             </div>
 
-                            <div className="text-3xl font-black text-neutral-950">${product.price.toFixed(2)}</div>
+                            <div className="text-3xl font-black text-neutral-950">Ksh {product.price?.toLocaleString()}</div>
 
                             <p className="text-xs md:text-sm text-neutral-600 leading-relaxed">
                                 {product.description || 'Engineered with precision and premium craftsmanship.'}
@@ -257,7 +257,7 @@ export default function ProductClient({ productId }: { productId: string }) {
                                         <p className="text-xs text-neutral-500">Curated Item</p>
                                     </div>
                                     <div className="flex items-center justify-between">
-                                        <span className="text-sm font-black text-neutral-950">${item.price.toFixed(2)}</span>
+                                        <span className="text-sm font-black text-neutral-950">Ksh {item.price?.toLocaleString()}</span>
                                         <span className="px-3 py-1.5 rounded-xl text-xs font-bold transition bg-neutral-100 text-neutral-700 group-hover:bg-[#FACC15] group-hover:text-neutral-950">View</span>
                                     </div>
                                 </div>

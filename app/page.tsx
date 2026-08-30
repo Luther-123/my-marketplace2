@@ -246,9 +246,8 @@ export default function Home() {
                   <h3 className="font-bold text-base mb-1 text-neutral-950">{product.title}</h3>
                   <p className="text-neutral-500 text-xs line-clamp-2 mb-4 font-light">{product.description || "No description provided."}</p>
                 </div>
-
                 <div className="flex items-center justify-between pt-4 border-t border-neutral-100">
-                  <span className="text-lg font-black text-neutral-950">${product.price}</span>
+                  <span className="text-lg font-black text-neutral-950">Ksh {product.price?.toLocaleString()}</span>
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => router.push(`/products/${product.id}`)}
