@@ -148,7 +148,12 @@ export default function AccountPage() {
     const handleLogout = async () => {
         await supabase.auth.signOut()
         localStorage.clear()
-        router.push('/signin')
+
+        // Check if running on GitHub Pages and route accordingly
+        const isProd = process.env.NODE_ENV === 'production'
+        const basePath = isProd ? '/my-marketplace2' : ''
+
+        router.push(`${basePath}/signin`)
     }
     return (
         <div className={`min-h-screen font-sans transition-colors duration-300 ${darkMode ? 'bg-neutral-950 text-white' : 'bg-neutral-100 text-neutral-900'}`}>
