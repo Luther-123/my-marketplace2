@@ -56,7 +56,7 @@ export default function AccountPage() {
     const [notifs, setNotifs] = useState({ emailAlerts: true, orderUpdates: true, promoSMS: false })
 
     useEffect(() => {
-        const fetchUserSession = async () => {
+        const fetchUserSessionAndProfile = async () => {
             const { data: { session } } = await supabase.auth.getSession()
             if (!session) {
                 router.push('/signin')
@@ -67,21 +67,39 @@ export default function AccountPage() {
             const userEmail = user.email || ''
 
             setEmail(userEmail)
-            setFullName(user.user_metadata?.full_name || user.user_metadata?.name || userEmail.split('@')[0] || '')
-            setPhone(user.user_metadata?.phone || '')
+
+            // Fetch profile data from the profiles table
+            const { data: profile } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', user.id)
+                .single()
+
+            if (profile) {
+                setFullName(profile.full_name || user.user_metadata?.full_name || user.user_metadata?.name || userEmail.split('@')[0] || '')
+                setPhone(profile.phone || user.user_metadata?.phone || '')
+                setAddressData({
+                    street: profile.street || '',
+                    city: profile.city || '',
+                    postalCode: profile.postal_code || '',
+                    country: profile.country || 'Kenya'
+                })
+            } else {
+                setFullName(user.user_metadata?.full_name || user.user_metadata?.name || userEmail.split('@')[0] || '')
+                setPhone(user.user_metadata?.phone || '')
+            }
 
             if (activeTab === 'orders') {
                 fetchOrders(userEmail)
             }
         }
 
-        fetchUserSession()
+        fetchUserSessionAndProfile()
     }, [activeTab, router])
 
     const fetchOrders = async (userEmail: string) => {
         setLoadingOrders(true)
         try {
-            // Strictly query orders by email address, ignoring user names completely
             const { data, error } = await supabase
                 .from('orders')
                 .select('*')
@@ -108,36 +126,64 @@ export default function AccountPage() {
     const handleSaveProfile = async (e: React.FormEvent) => {
         e.preventDefault()
         setLoading(true)
-
-        // 1. Update Supabase Auth metadata
-        const { error: authError } = await supabase.auth.updateUser({
-            data: { full_name: fullName, phone: phone }
-        })
-
-        // 2. If you also have a profiles or orders table storing this, update it here
         const { data: { user } } = await supabase.auth.getUser()
-        if (user?.email) {
-            await supabase
-                .from('orders')
-                .update({ customer_phone: phone })
-                .eq('customer_email', user.email)
+
+        if (user) {
+            // Update Supabase Auth metadata
+            await supabase.auth.updateUser({
+                data: { full_name: fullName, phone: phone }
+            })
+
+            // Upsert profile data into the persistent profiles table
+            const { error } = await supabase
+                .from('profiles')
+                .upsert({
+                    id: user.id,
+                    full_name: fullName,
+                    phone: phone,
+                    updated_at: new Date()
+                })
+
+            if (error) {
+                alert(`Error saving profile: ${error.message}`)
+            } else {
+                setSuccessMessage('Profile settings updated successfully!')
+                setTimeout(() => setSuccessMessage(''), 4000)
+            }
         }
 
         setLoading(false)
         setIsEditingProfile(false)
-        setSuccessMessage('Profile settings updated successfully!')
-        setTimeout(() => setSuccessMessage(''), 4000)
     }
 
     const handleSaveAddress = async (e: React.FormEvent) => {
         e.preventDefault()
         setLoading(true)
-        setTimeout(() => {
-            setLoading(false)
-            setIsEditingAddress(false)
-            setSuccessMessage('Shipping address saved successfully!')
-            setTimeout(() => setSuccessMessage(''), 4000)
-        }, 600)
+        const { data: { user } } = await supabase.auth.getUser()
+
+        if (user) {
+            // Upsert address data into the persistent profiles table
+            const { error } = await supabase
+                .from('profiles')
+                .upsert({
+                    id: user.id,
+                    street: addressData.street,
+                    city: addressData.city,
+                    postal_code: addressData.postalCode,
+                    country: addressData.country,
+                    updated_at: new Date()
+                })
+
+            if (error) {
+                alert(`Error saving address: ${error.message}`)
+            } else {
+                setSuccessMessage('Shipping address saved successfully!')
+                setTimeout(() => setSuccessMessage(''), 4000)
+            }
+        }
+
+        setLoading(false)
+        setIsEditingAddress(false)
     }
 
     const handleUpdatePassword = async (e: React.FormEvent) => {
@@ -168,7 +214,6 @@ export default function AccountPage() {
             }
         })
 
-        // Push directly to root /signin since Vercel serves from the root domain
         router.push('/signin')
     }
 
