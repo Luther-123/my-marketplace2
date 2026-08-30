@@ -81,6 +81,7 @@ export default function AccountPage() {
     const fetchOrders = async (userEmail: string) => {
         setLoadingOrders(true)
         try {
+            // Strictly query orders by email address, ignoring user names completely
             const { data, error } = await supabase
                 .from('orders')
                 .select('*')
