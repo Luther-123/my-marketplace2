@@ -79,7 +79,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         setCart(prev => prev.map(item => item.id === id ? { ...item, quantity } : item))
     }
 
-    const clearCart = () => setCart([])
+    // Clear cart state AND explicitly wipe it from localStorage on checkout completion
+    const clearCart = () => {
+        setCart([])
+        localStorage.removeItem('plugke_cart')
+    }
 
     const cartCount = cart.reduce((total, item) => total + item.quantity, 0)
 
