@@ -22,7 +22,6 @@ export default function ProductClient({ productId }: { productId: string }) {
 
     const [product, setProduct] = useState<Product | null>(null)
     const [relatedProducts, setRelatedProducts] = useState<Product[]>([])
-    const [loading, setLoading] = useState(true)
     const [quantity, setQuantity] = useState(1)
     const [added, setAdded] = useState(false)
     const [activeTab, setActiveTab] = useState<'details' | 'reviews'>('details')
@@ -40,7 +39,6 @@ export default function ProductClient({ productId }: { productId: string }) {
     }, [productId])
 
     const fetchProductAndRelated = async () => {
-        setLoading(true)
         try {
             const { data: currentProd, error: prodError } = await supabase
                 .from('products')
@@ -63,8 +61,6 @@ export default function ProductClient({ productId }: { productId: string }) {
             }
         } catch (err) {
             console.error('Unexpected error:', err)
-        } finally {
-            setLoading(false)
         }
     }
 
@@ -80,14 +76,6 @@ export default function ProductClient({ productId }: { productId: string }) {
         }
         setAdded(true)
         setTimeout(() => setAdded(false), 3000)
-    }
-
-    if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center font-sans bg-neutral-100 text-neutral-900">
-                <p className="text-xs text-neutral-500 font-bold uppercase tracking-wider animate-pulse">Loading product details...</p>
-            </div>
-        )
     }
 
     if (!product) {
