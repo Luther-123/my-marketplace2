@@ -78,14 +78,13 @@ export default function AccountPage() {
 
         fetchUserSession()
     }, [activeTab, router])
-
     const fetchOrders = async (userEmail: string) => {
         setLoadingOrders(true)
         try {
             const { data, error } = await supabase
                 .from('orders')
                 .select('*')
-                .eq('user_email', userEmail) // Ensure your orders table tracks user email or user_id
+                .eq('customer_email', userEmail) // Updated to match your actual column name
                 .order('created_at', { ascending: false })
 
             if (error) {
