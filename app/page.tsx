@@ -13,10 +13,16 @@ export default function Home() {
   const [products, setProducts] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
+  const [user, setUser] = useState<any>(null)
   const { cartCount, addToCart, setIsCartOpen } = useCart()
 
   useEffect(() => {
-    async function fetchProducts() {
+    async function fetchData() {
+      // Fetch current session/user
+      const { data: { session } } = await supabase.auth.getSession()
+      setUser(session?.user || null)
+
+      // Fetch products
       const { data, error } = await supabase.from('products').select('*')
       if (error) {
         console.error('Error fetching products:', error.message, error.details, error.hint)
@@ -26,7 +32,7 @@ export default function Home() {
       setLoading(false)
     }
 
-    fetchProducts()
+    fetchData()
   }, [])
 
   const filteredProducts = products.filter(product =>
@@ -63,28 +69,29 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Nav Icons & Actions: Cart, Account, Help */}
+          {/* Nav Icons & Actions: Account, Help, Cart */}
           <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
 
             {/* Account Link with Active Grey Highlight */}
             <button
               onClick={() => router.push('/account')}
               className={`flex items-center gap-1 px-2.5 sm:px-3 py-2 rounded-xl text-xs font-semibold transition cursor-pointer ${pathname === '/account'
-                  ? 'bg-neutral-200 text-neutral-900 font-bold'
-                  : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900'
+                ? 'bg-neutral-200 text-neutral-900 font-bold'
+                : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900'
                 }`}
               aria-label="Account"
             >
               <User className="w-4 h-4" /> <span className="hidden sm:inline">Account</span>
             </button>
 
-            {/* Help Link with Active Grey Highlight */}
+            {/* Help Link with Active Grey Highlight (Visible on Mobile & Desktop) */}
             <Link
               href="/help"
-              className={`hidden lg:flex items-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-xl text-xs font-semibold transition ${pathname === '/help'
-                  ? 'bg-neutral-200 text-neutral-900 font-bold'
-                  : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900'
+              className={`flex items-center gap-1 px-2.5 sm:px-3 py-2 rounded-xl text-xs font-semibold transition ${pathname === '/help'
+                ? 'bg-neutral-200 text-neutral-900 font-bold'
+                : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900'
                 }`}
+              aria-label="Help"
             >
               <HelpCircle className="w-4 h-4" /> <span className="hidden sm:inline">Help</span>
             </Link>
@@ -104,15 +111,9 @@ export default function Home() {
               )}
             </button>
 
-            {/* Mobile Menu Toggle */}
-            <div className="md:hidden p-1.5 cursor-pointer text-neutral-800">
-              <Menu className="w-6 h-6" />
-            </div>
           </div>
-
         </div>
       </header>
-
       {/* Mobile Search Input Row */}
       <div className="md:hidden px-3 sm:px-6 pt-3">
         <div className="relative w-full flex items-center rounded-xl border bg-neutral-50 border-neutral-200 text-neutral-900">
@@ -149,12 +150,24 @@ export default function Home() {
               >
                 Explore Catalog <ArrowRight className="w-4 h-4" />
               </button>
-              <button
-                onClick={() => router.push('/signup')}
-                className="flex items-center gap-2 px-7 py-4 bg-[#FACC15] text-neutral-950 font-black rounded-xl shadow-md hover:bg-yellow-400 transition cursor-pointer"
-              >
-                Create Account <ArrowRight className="w-4 h-4" />
-              </button>
+
+              {/* Conditional Button: Shows "Create Account" if logged out, or "View Account" if logged in */}
+              {/* Conditional Button: Shows "Create Account" if logged out, or "View Account" if logged in */}
+              {user ? (
+                <button
+                  onClick={() => router.push('/account')}
+                  className="flex items-center gap-2 px-7 py-4 bg-[#FACC15] text-neutral-950 font-black rounded-xl shadow-md hover:bg-yellow-400 transition cursor-pointer"
+                >
+                  View Account <ArrowRight className="w-4 h-4" />
+                </button>
+              ) : (
+                <button
+                  onClick={() => router.push('/signup')}
+                  className="flex items-center gap-2 px-7 py-4 bg-[#FACC15] text-neutral-950 font-black rounded-xl shadow-md hover:bg-yellow-400 transition cursor-pointer"
+                >
+                  Create Account <ArrowRight className="w-4 h-4" />
+                </button>
+              )}
             </div>
           </div>
 
