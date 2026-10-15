@@ -82,7 +82,8 @@ export default function CartPage() {
                 ) : (
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                         <div className="lg:col-span-8 p-6 md:p-8 rounded-3xl border bg-white border-neutral-200 shadow-sm">
-                            <div className="grid grid-cols-12 pb-4 border-b text-[11px] font-bold uppercase tracking-wider text-neutral-400 border-neutral-200">
+                            {/* Table Header - Hidden on mobile, shown as grid on sm screens and up */}
+                            <div className="hidden sm:grid grid-cols-12 pb-4 border-b text-[11px] font-bold uppercase tracking-wider text-neutral-400 border-neutral-200">
                                 <span className="col-span-6">Product</span>
                                 <span className="col-span-2 text-center">Price</span>
                                 <span className="col-span-2 text-center">Quantity</span>
@@ -91,10 +92,12 @@ export default function CartPage() {
 
                             <div className="divide-y divide-neutral-100">
                                 {cart.map((item) => (
-                                    <div key={item.id} className="grid grid-cols-12 items-center py-5">
-                                        <div className="col-span-6 flex items-center gap-4">
+                                    <div key={item.id} className="flex flex-col sm:grid sm:grid-cols-12 items-start sm:items-center py-6 gap-4 sm:gap-0 border-b border-neutral-200 last:border-none">
+
+                                        {/* Product Info & Thumbnail */}
+                                        <div className="w-full sm:col-span-6 flex items-center gap-4">
                                             <img src={item.image_url} alt={item.title} className="w-16 h-16 rounded-xl object-cover border border-neutral-200 shrink-0" />
-                                            <div className="min-w-0">
+                                            <div className="min-w-0 flex-1">
                                                 <h3 className="font-bold text-sm truncate text-neutral-900">{item.title}</h3>
                                                 <p className="text-xs text-neutral-500">Curated Item</p>
                                                 <button
@@ -105,23 +108,39 @@ export default function CartPage() {
                                                 </button>
                                             </div>
                                         </div>
-                                        <div className="col-span-2 text-center text-sm font-bold text-neutral-900">Ksh {item.price?.toLocaleString()}</div>
-                                        <div className="col-span-2 flex items-center justify-center gap-2">
-                                            <button
-                                                onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                                                className="w-7 h-7 rounded-lg border flex items-center justify-center transition cursor-pointer border-neutral-300 hover:bg-neutral-100 text-neutral-700"
-                                            >
-                                                -
-                                            </button>
-                                            <span className="text-xs font-bold w-4 text-center text-neutral-900">{item.quantity}</span>
-                                            <button
-                                                onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                                                className="w-7 h-7 rounded-lg border flex items-center justify-center transition cursor-pointer border-neutral-300 hover:bg-neutral-100 text-neutral-700"
-                                            >
-                                                +
-                                            </button>
+
+                                        {/* Price, Quantity, and Subtotal Row for Mobile / Columns for Desktop */}
+                                        <div className="w-full sm:w-auto sm:col-span-6 flex items-center justify-between sm:grid sm:grid-cols-6 pt-2 sm:pt-0 border-t sm:border-t-0 border-neutral-100">
+
+                                            {/* Unit Price */}
+                                            <div className="sm:col-span-2 text-left sm:text-center text-xs sm:text-sm font-bold text-neutral-900">
+                                                <span className="sm:hidden text-neutral-400 font-normal mr-1">Price:</span>
+                                                Ksh {item.price?.toLocaleString()}
+                                            </div>
+
+                                            {/* Quantity Controls */}
+                                            <div className="sm:col-span-2 flex items-center justify-center gap-2">
+                                                <button
+                                                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                                                    className="w-7 h-7 rounded-lg border flex items-center justify-center transition cursor-pointer border-neutral-300 hover:bg-neutral-100 text-neutral-700"
+                                                >
+                                                    -
+                                                </button>
+                                                <span className="text-xs font-bold w-4 text-center text-neutral-900">{item.quantity}</span>
+                                                <button
+                                                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                                    className="w-7 h-7 rounded-lg border flex items-center justify-center transition cursor-pointer border-neutral-300 hover:bg-neutral-100 text-neutral-700"
+                                                >
+                                                    +
+                                                </button>
+                                            </div>
+
+                                            {/* Subtotal */}
+                                            <div className="sm:col-span-2 text-right text-xs sm:text-sm font-black text-neutral-900">
+                                                <span className="sm:hidden text-neutral-400 font-normal mr-1">Subtotal:</span>
+                                                Ksh {(item.price * item.quantity).toLocaleString()}
+                                            </div>
                                         </div>
-                                        <div className="col-span-2 text-right text-sm font-black text-neutral-900">Ksh {(item.price * item.quantity).toLocaleString()}</div>
                                     </div>
                                 ))}
                             </div>
