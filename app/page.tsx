@@ -1,14 +1,15 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { useCart } from '@/context/CartContext'
-import { ArrowRight, ShoppingBag, Menu, Search, Sparkles, ShoppingCart, User, Mail } from 'lucide-react'
+import { ArrowRight, ShoppingBag, HelpCircle, Menu, Search, Sparkles, ShoppingCart, User, Mail } from 'lucide-react'
 
 export default function Home() {
   const router = useRouter()
+  const pathname = usePathname()
   const [products, setProducts] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
@@ -38,15 +39,17 @@ export default function Home() {
 
       {/* ================= NAVBAR ================= */}
       <header className="sticky top-0 z-50 backdrop-blur-md border-b bg-white/80 border-neutral-200 transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between gap-4">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 h-20 flex items-center justify-between gap-2 sm:gap-4">
 
-          <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => router.push('/')}>
-            <div className="w-10 h-10 rounded-lg bg-[#FACC15] flex items-center justify-center text-neutral-950 font-black text-xl tracking-tighter shadow-sm">
+          {/* Brand / Logo */}
+          <div className="flex items-center gap-2 cursor-pointer shrink-0" onClick={() => router.push('/')}>
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-[#FACC15] flex items-center justify-center text-neutral-950 font-black text-xl tracking-tighter shadow-sm">
               P
             </div>
-            <span className="text-xl font-black tracking-tight text-neutral-950">plugKe</span>
+            <span className="text-lg sm:text-xl font-black tracking-tight text-neutral-950">plugKe</span>
           </div>
 
+          {/* Desktop Search Bar */}
           <div className="hidden md:flex items-center flex-1 max-w-sm mx-4">
             <div className="relative w-full flex items-center rounded-xl border bg-neutral-50 border-neutral-200 text-neutral-900 focus-within:border-neutral-400 transition">
               <Search className="w-4 h-4 ml-3.5 text-neutral-400" />
@@ -61,29 +64,35 @@ export default function Home() {
           </div>
 
           {/* Nav Icons & Actions: Cart, Account, Help */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
 
-            {/* Help */}
-            <Link
-              href="/help"
-              className="hidden lg:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition text-neutral-600 hover:bg-neutral-100"
-            >
-              <Mail className="w-4 h-4" /> Help
-            </Link>
-
-            {/* Account */}
+            {/* Account Link with Active Grey Highlight */}
             <button
               onClick={() => router.push('/account')}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition text-neutral-600 hover:bg-neutral-100 cursor-pointer"
+              className={`flex items-center gap-1 px-2.5 sm:px-3 py-2 rounded-xl text-xs font-semibold transition cursor-pointer ${pathname === '/account'
+                  ? 'bg-neutral-200 text-neutral-900 font-bold'
+                  : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900'
+                }`}
               aria-label="Account"
             >
               <User className="w-4 h-4" /> <span className="hidden sm:inline">Account</span>
             </button>
 
+            {/* Help Link with Active Grey Highlight */}
+            <Link
+              href="/help"
+              className={`hidden lg:flex items-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-xl text-xs font-semibold transition ${pathname === '/help'
+                  ? 'bg-neutral-200 text-neutral-900 font-bold'
+                  : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900'
+                }`}
+            >
+              <HelpCircle className="w-4 h-4" /> <span className="hidden sm:inline">Help</span>
+            </Link>
+
             {/* Cart Button (Opens Drawer) */}
             <button
               onClick={() => setIsCartOpen(true)}
-              className="relative flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition cursor-pointer bg-neutral-100 text-neutral-900 hover:bg-neutral-200 border border-neutral-200"
+              className="relative flex items-center gap-1 px-2.5 sm:px-3.5 py-2 rounded-xl text-xs font-bold transition cursor-pointer bg-neutral-100 text-neutral-900 hover:bg-neutral-200 border border-neutral-200"
               aria-label="Cart"
             >
               <ShoppingCart className="w-4 h-4" />
@@ -95,7 +104,8 @@ export default function Home() {
               )}
             </button>
 
-            <div className="md:hidden p-2 cursor-pointer text-neutral-800">
+            {/* Mobile Menu Toggle */}
+            <div className="md:hidden p-1.5 cursor-pointer text-neutral-800">
               <Menu className="w-6 h-6" />
             </div>
           </div>
@@ -103,7 +113,8 @@ export default function Home() {
         </div>
       </header>
 
-      <div className="md:hidden px-6 pt-4">
+      {/* Mobile Search Input Row */}
+      <div className="md:hidden px-3 sm:px-6 pt-3">
         <div className="relative w-full flex items-center rounded-xl border bg-neutral-50 border-neutral-200 text-neutral-900">
           <Search className="w-4 h-4 ml-3.5 text-neutral-400" />
           <input
@@ -111,7 +122,7 @@ export default function Home() {
             placeholder="Search products..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-transparent py-2.5 px-3 text-sm focus:outline-none placeholder:text-neutral-400"
+            className="w-full bg-transparent py-2 px-3 text-sm focus:outline-none placeholder:text-neutral-400"
           />
         </div>
       </div>

@@ -1,13 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { useCart } from '@/context/CartContext'
 import { User, HelpCircle, Send, CheckCircle, ShoppingCart } from 'lucide-react'
 
 export default function HelpPage() {
     const router = useRouter()
+    const pathname = usePathname()
     const { cartCount, setIsCartOpen } = useCart()
     const [submitted, setSubmitted] = useState(false)
     const [formData, setFormData] = useState({ name: '', email: '', message: '' })
@@ -22,35 +23,43 @@ export default function HelpPage() {
 
             {/* Top Navigation Bar */}
             <header className="sticky top-0 z-50 backdrop-blur-md border-b bg-white/80 border-neutral-200 transition-colors duration-300">
-                <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-                    <div className="flex items-center gap-3 cursor-pointer" onClick={() => router.push('/')}>
-                        <div className="w-10 h-10 rounded-xl bg-[#FACC15] flex items-center justify-center text-neutral-950 font-black text-xl shadow-sm">
+                <div className="max-w-7xl mx-auto px-3 sm:px-6 h-20 flex items-center justify-between">
+                    <div className="flex items-center gap-2 sm:gap-3 cursor-pointer shrink-0" onClick={() => router.push('/')}>
+                        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#FACC15] flex items-center justify-center text-neutral-950 font-black text-xl shadow-sm">
                             P
                         </div>
-                        <span className="text-xl font-black tracking-tight text-neutral-950">plugKe</span>
+                        <span className="text-lg sm:text-xl font-black tracking-tight text-neutral-950">plugKe</span>
                     </div>
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-1 sm:gap-3 shrink-0">
+                        {/* Account Link */}
                         <Link
                             href="/account"
-                            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition text-neutral-600 hover:bg-neutral-100"
+                            className={`flex items-center gap-1 px-2.5 sm:px-3 py-2 rounded-xl text-xs font-semibold transition cursor-pointer ${pathname === '/account'
+                                    ? 'bg-neutral-200 text-neutral-900 font-bold'
+                                    : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900'
+                                }`}
                         >
-                            <User className="w-4 h-4" /> Account
+                            <User className="w-4 h-4" /> <span className="hidden sm:inline">Account</span>
                         </Link>
 
+                        {/* Help Link with Active Grey Highlight */}
                         <Link
                             href="/help"
-                            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition text-neutral-600 hover:bg-neutral-100"
+                            className={`flex items-center gap-1 px-2.5 sm:px-3 py-2 rounded-xl text-xs font-semibold transition cursor-pointer ${pathname === '/help'
+                                    ? 'bg-neutral-200 text-neutral-900 font-bold'
+                                    : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900'
+                                }`}
                         >
-                            <HelpCircle className="w-4 h-4" /> Help
+                            <HelpCircle className="w-4 h-4" /> <span className="hidden sm:inline">Help</span>
                         </Link>
 
                         <button
                             onClick={() => setIsCartOpen(true)}
-                            className="relative flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition cursor-pointer bg-neutral-100 text-neutral-900 hover:bg-neutral-200 border border-neutral-200"
+                            className="relative flex items-center gap-1 px-2.5 sm:px-3.5 py-2 rounded-xl text-xs font-bold transition cursor-pointer bg-neutral-100 text-neutral-900 hover:bg-neutral-200 border border-neutral-200"
                         >
                             <ShoppingCart className="w-4 h-4" />
-                            <span>Cart</span>
+                            <span className="hidden sm:inline">Cart</span>
                             {cartCount > 0 && (
                                 <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-[#FACC15] text-neutral-950 font-black text-[10px] flex items-center justify-center shadow-sm">
                                     {cartCount}
